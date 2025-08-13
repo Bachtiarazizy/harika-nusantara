@@ -24,21 +24,25 @@ export default function Navigation() {
       <nav className={`absolute top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent`}>
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3">
-              <Image src="/images/logo.png" alt="Logo" width={40} height={40} />
-              <div className="">
-                <h1 className="text-xl font-bold text-white">HARIKA</h1>
-                <h1 className="text-xl font-bold pl-3 text-white">NUSANTARA</h1>
+            <Link href="/" className="flex items-center space-x-2 ">
+              <div className="w-10 h-10 bg-gradient-to-br from-gold to-coffee-medium rounded-full flex items-center justify-center">
+                <Image
+                  src="/images/logo-09.png" // Replace with your image path
+                  alt="Harika Nusantara Logo"
+                  width={65} // Adjust size to fit nicely inside the 40x40 div
+                  height={65}
+                />
               </div>
+              <h1 className="text-medium hidden md:block font-bold text-white">HARIKA NUSANTARA</h1>
             </Link>
 
             <div className="hidden lg:flex items-center space-x-8">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                 return (
-                  <Link key={item.href} href={item.href} className={`font-medium relative group transition-colors ${isActive ? "text-[#AEE57E]" : "text-white hover:text-[#AEE57E]"}`}>
+                  <Link key={item.href} href={item.href} className={`font-medium relative group transition-colors ${isActive ? "text-[#e49e35]" : "text-white hover:text-[#e49e35]"}`}>
                     {item.label}
-                    <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-200 ${isActive ? "w-full bg-[#AEE57E]" : "w-0 bg-[#AEE57E] group-hover:w-full"}`}></span>
+                    <span className={`absolute bottom-0 left-0 h-0.5 transition-all duration-200 ${isActive ? "w-full bg-[#e49e35]" : "w-0 bg-[#e49e35] group-hover:w-full"}`}></span>
                   </Link>
                 );
               })}
@@ -47,7 +51,7 @@ export default function Navigation() {
               </Link>
             </div>
 
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-white hover:text-[#AEE57E] transition-colors">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-white hover:text-[#e49e35] transition-colors">
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -58,12 +62,12 @@ export default function Navigation() {
                 {navItems.map((item) => {
                   const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                   return (
-                    <Link key={item.href} href={item.href} className={`font-medium py-2 transition-colors ${isActive ? "text-[#AEE57E]" : "text-[#233F2E] hover:text-[#AEE57E]"}`} onClick={() => setIsMenuOpen(false)}>
+                    <Link key={item.href} href={item.href} className={`font-medium py-2 transition-colors ${isActive ? "text-[#e49e35]" : "text-[#233F2E] hover:text-[#e49e35]"}`} onClick={() => setIsMenuOpen(false)}>
                       {item.label}
                     </Link>
                   );
                 })}
-                <Link href="/contact" className="px-6 py-2 rounded-lg font-medium text-center mt-4 bg-[#AEE57E] text-[#233F2E] hover:bg-white transition-all" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/contact" className="px-6 py-2 rounded-lg font-medium text-center mt-4 bg-[#e49e35] text-[#233F2E] hover:bg-white transition-all" onClick={() => setIsMenuOpen(false)}>
                   Get Quote
                 </Link>
               </div>

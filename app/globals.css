@@ -159,3 +159,9 @@
     background-color: var(--earth-brown);
   }
 }
+
+@layer components {
+  .subtitle {
+    @apply text-coffee-dark font-semibold text-sm uppercase tracking-[0.5em] mb-6 border border-muted-foreground rounded-sm px-4 py-2 inline-block;
+  }
+}

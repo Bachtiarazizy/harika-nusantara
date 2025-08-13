@@ -9,9 +9,9 @@ export function Button({ children, variant = "primary", size = "md", className, 
   const baseClasses = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
 
   const variants = {
-    primary: "bg-gold text-white hover:bg-coffee-medium focus:ring-gold",
-    secondary: "bg-coffee-light text-coffee-dark hover:bg-coffee-medium hover:text-white focus:ring-coffee-light",
-    outline: "border-2 border-gold text-gold hover:bg-gold hover:text-white focus:ring-gold",
+    primary: "bg-[#e49e35] text-white hover:bg-[#27231a] focus:ring-[#e49e35]",
+    secondary: "bg-coffee-light text-coffee-dark hover:bg-[#27231a] hover:text-white focus:ring-coffee-light",
+    outline: "border-2 border-[#e49e35] text-[#e49e35] hover:bg-[#e49e35] hover:text-white focus:ring-[#e49e35]",
     ghost: "text-coffee-dark hover:bg-coffee-light focus:ring-coffee-light",
   };
 
@@ -47,7 +47,7 @@ export function Section({ children, className, ...props }) {
 export function SectionHeader({ title, subtitle, description, centered = true }) {
   return (
     <div className={cn("mb-12", centered && "text-center")}>
-      {subtitle && <p className="text-gold font-semibold text-sm uppercase tracking-wide mb-2">{subtitle}</p>}
+      {subtitle && <p className="text-[#e49e35] font-semibold text-sm uppercase tracking-wide mb-2">{subtitle}</p>}
       <h2 className="text-3xl lg:text-4xl font-bold text-coffee-dark mb-4">{title}</h2>
       {description && <p className="text-lg text-muted-foreground max-w-3xl mx-auto">{description}</p>}
     </div>

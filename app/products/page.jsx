@@ -300,7 +300,7 @@ export default function ProductsPage() {
       </Section>
 
       {/* Quality Certifications */}
-      <Section>
+      {/* <Section>
         <SectionHeader subtitle="Quality Assurance" title="International Certifications & Standards" description="Our products meet the highest international quality standards and certifications." />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
@@ -320,7 +320,7 @@ export default function ProductsPage() {
             <p className="text-muted-foreground">Food Safety Management System</p>
           </Card>
         </div>
-      </Section>
+      </Section> */}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import Navigation from "@/components/layout/Navbar";
 import "./globals.css";
 import { Archivo } from "next/font/google";
 import Footer from "@/components/layout/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import WhatsAppButton from "@/components/home/WhatsAppButton";
 import PageWrapper from "@/components/layout/PageWrapper";
 
 const archivo = Archivo({
