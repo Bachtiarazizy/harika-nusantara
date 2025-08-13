@@ -10,16 +10,9 @@ export default function HeroSection() {
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         {/* Fallback image (poster) */}
-        <div
-          className="w-full h-full bg-cover bg-center absolute inset-0"
-          style={{
-            backgroundImage: "url(/fallback.jpg)",
-            filter: "brightness(0.6)",
-          }}
-        ></div>
 
         {/* Video */}
-        <video autoPlay muted loop playsInline preload="auto" poster="/images/coffee-beans.jpg" className="w-full h-full object-cover absolute inset-0" style={{ filter: "brightness(0.6)" }}>
+        <video autoPlay muted loop playsInline preload="auto" className="w-full h-full object-cover absolute inset-0" style={{ filter: "brightness(0.6)" }}>
           <source src="/video.webm" type="video/webm" />
           <source src="/video.mp4" type="video/mp4" />
           Your browser does not support the video tag.

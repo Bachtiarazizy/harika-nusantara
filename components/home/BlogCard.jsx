@@ -45,7 +45,7 @@ export default function BlogCard({ post, index = 0 }) {
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-bold text-coffee-dark mb-3">{post.title}</h3>
+          <h3 className="text-xl font-bold text-coffee-dark mb-3 line-clamp-2">{post.title}</h3>
 
           {/* Excerpt */}
           <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>

@@ -10,7 +10,9 @@ export default function ValueSection() {
   return (
     <section className="w-full flex flex-col lg:flex-row overflow-hidden">
       {/* gambar */}
-      <Image src="/images/farmer.jpg" alt="Indonesian Coffee Farmers Working Together" width={300} height={300} quality={100} className="w-full h-full object-cover" />
+      <motion.div className="flex justify-center hidden md:block lg:justify-end lg:w-1/2" initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true, amount: 0.3 }}>
+        <Image src="/images/farmer.jpg" alt="Indonesian Coffee Farmers Working Together" width={700} height={700} quality={100} className="w-full h-full object-cover" />
+      </motion.div>
 
       {/* text content */}
       <motion.div className="lg:w-1/2 px-6 md:px-12 py-12 flex items-center bg-[#483B36]" initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} viewport={{ once: true, amount: 0.3 }}>
