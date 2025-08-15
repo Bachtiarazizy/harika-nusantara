@@ -3,7 +3,7 @@ import BlogSection from "@/components/home/BlogSection";
 import CTASection from "@/components/home/CtaSection";
 import HeroSection from "@/components/home/HeroSection";
 import ImageSection from "@/components/home/ImageSection";
-import ProductShowcaseSection from "@/components/home/ProductCard";
+import ProductShowcaseSection from "@/components/home/ProductShowcaseSection";
 import ValueSection from "@/components/home/ValueSection";
 import WhyChooseUsSection from "@/components/home/WhyChooseUsSection";
 import { getLatestPosts } from "@/lib/sanityQueries";

@@ -1,6 +1,16 @@
+// app/products/page.js
 import { Button, Card, Section, SectionHeader } from "@/components/ui/Index";
+import { Coffee, Leaf, Award, Download, CheckCircle, Star, Eye } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { getAllProducts, getAllProductCategories } from "@/lib/sanityProductQueries";
 
-import { Coffee, Leaf, Award, Download, CheckCircle, Star } from "lucide-react";
+// Dynamic icon mapping
+const iconMap = {
+  Coffee,
+  Leaf,
+  Award,
+};
 
 export const metadata = {
   title: "Products - Premium Indonesian Coffee Beans & Cocoa",
@@ -13,7 +23,150 @@ export const metadata = {
   },
 };
 
-export default function ProductsPage() {
+// Product Card Component
+function ProductCard({ product }) {
+  const IconComponent = iconMap[product.category?.icon] || Coffee;
+
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => <Star key={index} className={`w-4 h-4 ${index < rating ? "text-gold fill-current" : "text-gray-300"}`} />);
+  };
+
+  return (
+    <Card className="overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+      {/* Product Image */}
+      <div className="relative h-64 overflow-hidden">
+        {product.mainImage?.asset?.url ? (
+          <Image
+            src={product.mainImage.asset.url}
+            alt={product.mainImage.alt || product.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-coffee-light to-coffee-medium flex items-center justify-center">
+            <IconComponent className="w-16 h-16 text-white/80" />
+          </div>
+        )}
+
+        {/* Featured Badge */}
+        {product.featured && (
+          <div className="absolute top-4 left-4">
+            <span className="bg-gold text-white px-3 py-1 text-xs font-semibold rounded-full">Featured</span>
+          </div>
+        )}
+      </div>
+
+      {/* Product Info */}
+      <div className="p-6">
+        {/* Category & Rating */}
+        <div className="flex items-center justify-between mb-3">
+          <span className={`text-xs font-medium px-2 py-1 rounded-full bg-${product.category?.color || "coffee-dark"}/10 text-${product.category?.color || "coffee-dark"}`}>{product.category?.name}</span>
+          <div className="flex items-center gap-1">{renderStars(product.rating || 5)}</div>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-coffee-dark mb-3 line-clamp-2">{product.title}</h3>
+
+        {/* Description */}
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{product.shortDescription}</p>
+
+        {/* Specifications Preview */}
+        {product.specifications && product.specifications.length > 0 && (
+          <div className="mb-4">
+            <h4 className="font-medium text-coffee-dark text-sm mb-2">Key Specs:</h4>
+            <div className="space-y-1">
+              {product.specifications.slice(0, 3).map((spec, index) => (
+                <div key={index} className="flex items-center text-xs">
+                  <CheckCircle className="w-3 h-3 text-forest-green mr-2 flex-shrink-0" />
+                  <span className="text-gray-600">
+                    <span className="font-medium">{spec.label}:</span> {spec.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Origins/Processing Methods */}
+        <div className="mb-6">
+          {product.origins && product.origins.length > 0 && (
+            <div className="mb-3">
+              <h4 className="font-medium text-coffee-dark text-sm mb-2">Origins:</h4>
+              <div className="flex flex-wrap gap-1">
+                {product.origins.slice(0, 4).map((origin, index) => (
+                  <span key={index} className="px-2 py-1 bg-coffee-light/20 text-coffee-dark text-xs rounded-full">
+                    {origin}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {product.processingMethods && product.processingMethods.length > 0 && (
+            <div className="mb-3">
+              <h4 className="font-medium text-coffee-dark text-sm mb-2">Processing:</h4>
+              <div className="flex flex-wrap gap-1">
+                {product.processingMethods.slice(0, 3).map((method, index) => (
+                  <span key={index} className="px-2 py-1 bg-cocoa-medium/20 text-cocoa-dark text-xs rounded-full">
+                    {method}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <Link href={`/products/${product.slug.current}`} className="flex-1">
+            <Button className="w-full">
+              <Eye className="w-4 h-4 mr-2" />
+              View Details
+            </Button>
+          </Link>
+
+          {product.specificationSheet?.asset?.url && (
+            <Button variant="outline" asChild>
+              <a href={product.specificationSheet.asset.url} download={product.specificationSheet.asset.originalFilename} target="_blank" rel="noopener noreferrer">
+                <Download className="w-4 h-4" />
+              </a>
+            </Button>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+// Category Filter Component
+function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
+  return (
+    <div className="flex flex-wrap gap-3 mb-8">
+      <button onClick={() => onCategoryChange("all")} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${activeCategory === "all" ? "bg-coffee-dark text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
+        All Products
+      </button>
+      {categories.map((category) => (
+        <button
+          key={category._id}
+          onClick={() => onCategoryChange(category.slug.current)}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${activeCategory === category.slug.current ? `bg-${category.color || "coffee-dark"} text-white` : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+        >
+          {category.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default async function ProductsPage({ searchParams }) {
+  const products = await getAllProducts();
+  const categories = await getAllProductCategories();
+
+  // Group products by category for display
+  const coffeeProducts = products.filter((p) => p.category?.slug?.current === "coffee" || p.productType.includes("coffee"));
+  const cocoaProducts = products.filter((p) => p.category?.slug?.current === "cocoa" || p.productType.includes("cocoa"));
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -24,283 +177,51 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* Coffee Products */}
-      <Section id="coffee">
-        <SectionHeader
-          subtitle="Coffee Products"
-          title="Premium Indonesian Coffee Beans"
-          description="From the volcanic soils of Java, Sumatra, and Sulawesi, we offer the finest Arabica and Robusta coffee beans for international markets."
-        />
+      {/* Coffee Products Section */}
+      {coffeeProducts.length > 0 && (
+        <Section id="coffee">
+          <SectionHeader
+            subtitle="Coffee Products"
+            title="Premium Indonesian Coffee Beans"
+            description="From the volcanic soils of Java, Sumatra, and Sulawesi, we offer the finest Arabica and Robusta coffee beans for international markets."
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-          {/* Arabica Coffee */}
-          <Card className="overflow-hidden">
-            <div
-              className="h-64 bg-cover bg-center"
-              style={{
-                backgroundImage: "url(/images/coffee-beans-premium.webp)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            ></div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-2xl font-semibold text-coffee-dark">Arabica Coffee Beans</h3>
-                <div className="flex items-center text-gold">
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-4">Premium Arabica beans from high-altitude plantations, known for their complex flavor profiles, bright acidity, and aromatic qualities.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+            {coffeeProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        </Section>
+      )}
 
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Specifications:</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Grade 1 & Specialty Grade available
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Moisture content: 11-12%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Screen size: 15-18
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Defect rate: 2%
-                  </li>
-                </ul>
-              </div>
+      {/* Cocoa Products Section */}
+      {cocoaProducts.length > 0 && (
+        <Section id="cocoa" className="bg-coffee-light/10">
+          <SectionHeader subtitle="Cocoa Products" title="Premium Indonesian Cocoa" description="High-quality cocoa beans and powder from Indonesian plantations, perfect for chocolate manufacturing and confectionery applications." />
 
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Origins Available:</h4>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Java</span>
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Sumatra</span>
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Sulawesi</span>
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Bali</span>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+            {cocoaProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        </Section>
+      )}
 
-              <div className="flex gap-3">
-                <Button className="flex-1">Request Quote</Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Spec Sheet
-                </Button>
-              </div>
-            </div>
-          </Card>
+      {/* All Products Section (if no category-specific sections) */}
+      {coffeeProducts.length === 0 && cocoaProducts.length === 0 && products.length > 0 && (
+        <Section>
+          <SectionHeader subtitle="Our Products" title="Premium Indonesian Products" description="Discover our full range of premium coffee beans and cocoa products from Indonesian plantations." />
 
-          {/* Robusta Coffee */}
-          <Card className="overflow-hidden">
-            <div
-              className="h-64 bg-cover bg-center"
-              style={{
-                backgroundImage: "url(/images/coffee-beans-premium.webp)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            ></div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-2xl font-semibold text-coffee-dark">Robusta Coffee Beans</h3>
-                <div className="flex items-center text-gold">
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-4">High-quality Robusta beans with strong body, low acidity, and higher caffeine content. Perfect for espresso blends and instant coffee production.</p>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Specifications:</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Grade 1 & Grade 2 available
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Moisture content: 11-12%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Screen size: 13-16
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Caffeine content: 2.2-2.7%
-                  </li>
-                </ul>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Processing Methods:</h4>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Wet Process</span>
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Dry Process</span>
-                  <span className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">Semi-Washed</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Button className="flex-1">Request Quote</Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Spec Sheet
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </Section>
-
-      {/* Cocoa Products */}
-      <Section id="cocoa" className="bg-coffee-light/10">
-        <SectionHeader subtitle="Cocoa Products" title="Premium Indonesian Cocoa" description="High-quality cocoa beans and powder from Indonesian plantations, perfect for chocolate manufacturing and confectionery applications." />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-          {/* Cocoa Beans */}
-          <Card className="overflow-hidden">
-            <div
-              className="h-64 bg-cover bg-center"
-              style={{
-                backgroundImage: "url(/images/cocoa-products.webp)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            ></div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-2xl font-semibold text-coffee-dark">Premium Cocoa Beans</h3>
-                <div className="flex items-center text-gold">
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-4">Fermented and dried cocoa beans with excellent flavor profiles, ideal for premium chocolate production and confectionery applications.</p>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Specifications:</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Moisture content: 6-7%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Bean count: 95-105 per 100g
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Fat content: 50-57%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    pH level: 5.3-5.8
-                  </li>
-                </ul>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Quality Grades:</h4>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Grade A</span>
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Grade B</span>
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Fair Trade</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Button className="flex-1">Request Quote</Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Spec Sheet
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          {/* Cocoa Powder */}
-          <Card className="overflow-hidden">
-            <div
-              className="h-64 bg-cover bg-center"
-              style={{
-                backgroundImage: "url(/images/cocoa-products.webp)",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            ></div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-2xl font-semibold text-coffee-dark">Cocoa Powder</h3>
-                <div className="flex items-center text-gold">
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                  <Star className="w-5 h-5 fill-current" />
-                </div>
-              </div>
-              <p className="text-muted-foreground mb-4">Fine cocoa powder processed from premium Indonesian cocoa beans, available in natural and alkalized varieties for various applications.</p>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Specifications:</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Fat content: 10-12% or 20-22%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Moisture content: Max 5%
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    Fineness: 99.5% through 200 mesh
-                  </li>
-                  <li className="flex items-center text-sm">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
-                    pH level: 5.3-5.8 (natural)
-                  </li>
-                </ul>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-coffee-dark">Types Available:</h4>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Natural</span>
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Alkalized</span>
-                  <span className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">Organic</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Button className="flex-1">Request Quote</Button>
-                <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Spec Sheet
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </Section>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+            {products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* Quality Certifications */}
-      {/* <Section>
+      {/* <Section className="bg-gray-50">
         <SectionHeader subtitle="Quality Assurance" title="International Certifications & Standards" description="Our products meet the highest international quality standards and certifications." />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
@@ -309,15 +230,31 @@ export default function ProductsPage() {
               <Award className="w-8 h-8 text-gold" />
             </div>
             <h3 className="font-semibold text-coffee-dark mb-2">ISO 22000</h3>
-            <p className="text-muted-foreground">Food Safety Management System</p>
+            <p className="text-muted-foreground text-sm">Food Safety Management System</p>
           </Card>
 
           <Card className="p-6 text-center">
             <div className="w-16 h-16 bg-forest-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Leaf className="w-8 h-8 text-forest-green" />
             </div>
-            <h3 className="font-semibold text-coffee-dark mb-2">ISO 22001</h3>
-            <p className="text-muted-foreground">Food Safety Management System</p>
+            <h3 className="font-semibold text-coffee-dark mb-2">Organic Certified</h3>
+            <p className="text-muted-foreground text-sm">Certified Organic Products</p>
+          </Card>
+
+          <Card className="p-6 text-center">
+            <div className="w-16 h-16 bg-coffee-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Coffee className="w-8 h-8 text-coffee-dark" />
+            </div>
+            <h3 className="font-semibold text-coffee-dark mb-2">Fair Trade</h3>
+            <p className="text-muted-foreground text-sm">Fair Trade Certified</p>
+          </Card>
+
+          <Card className="p-6 text-center">
+            <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Award className="w-8 h-8 text-gold" />
+            </div>
+            <h3 className="font-semibold text-coffee-dark mb-2">HACCP</h3>
+            <p className="text-muted-foreground text-sm">Hazard Analysis Critical Control</p>
           </Card>
         </div>
       </Section> */}

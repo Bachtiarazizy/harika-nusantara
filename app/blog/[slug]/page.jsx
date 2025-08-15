@@ -42,7 +42,7 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// Portable Text components for rich text rendering
+// Enhanced Portable Text components for rich text rendering
 const portableTextComponents = {
   types: {
     image: ({ value }) => {
@@ -81,7 +81,8 @@ const portableTextComponents = {
         </figure>
       );
     },
-    // Add support for image galleries
+
+    // Image Gallery
     gallery: ({ value }) => {
       const { images, title } = value;
 
@@ -105,7 +106,8 @@ const portableTextComponents = {
         </div>
       );
     },
-    // Add support for image with text wrapping
+
+    // Image with Text Wrapping
     imageWithText: ({ value }) => {
       const { image, text, position = "left" } = value;
 
@@ -127,7 +129,61 @@ const portableTextComponents = {
         </div>
       );
     },
+
+    // Video Embed
+    videoEmbed: ({ value }) => {
+      const { url, title, caption } = value;
+
+      if (!url) return null;
+
+      // Extract video ID and determine platform
+      const getVideoEmbedUrl = (url) => {
+        // YouTube
+        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+        if (youtubeMatch) {
+          return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+        }
+
+        // Vimeo
+        const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/);
+        if (vimeoMatch) {
+          return `https://player.vimeo.com/video/${vimeoMatch[3]}`;
+        }
+
+        return url;
+      };
+
+      const embedUrl = getVideoEmbedUrl(url);
+
+      return (
+        <div className="my-8">
+          {title && <h3 className="text-lg font-semibold text-coffee-dark mb-4 text-center">{title}</h3>}
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+            <iframe src={embedUrl} title={title || "Video"} className="w-full h-full" frameBorder="0" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
+          </div>
+          {caption && <p className="text-sm text-muted-foreground text-center mt-3 italic leading-relaxed px-4">{caption}</p>}
+        </div>
+      );
+    },
+
+    // Code Block
+    codeBlock: ({ value }) => {
+      const { code, language, filename } = value;
+
+      if (!code) return null;
+
+      return (
+        <div className="my-8">
+          {filename && <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 text-sm font-mono text-gray-600 rounded-t-lg">{filename}</div>}
+          <pre className={`bg-gray-900 text-gray-100 p-4 overflow-x-auto text-sm ${filename ? "rounded-b-lg" : "rounded-lg"}`}>
+            <code className={language ? `language-${language}` : ""}>{code}</code>
+          </pre>
+          {language && <div className="text-xs text-muted-foreground mt-1 text-right">{language}</div>}
+        </div>
+      );
+    },
   },
+
   block: {
     h2: ({ children }) => <h2 className="text-2xl font-bold text-coffee-dark mt-8 mb-4">{children}</h2>,
     h3: ({ children }) => <h3 className="text-xl font-semibold text-coffee-dark mt-6 mb-3">{children}</h3>,
@@ -135,18 +191,22 @@ const portableTextComponents = {
     blockquote: ({ children }) => <blockquote className="border-l-4 border-coffee-light pl-6 py-4 my-6 bg-coffee-light/5 italic text-lg">{children}</blockquote>,
     normal: ({ children }) => <p className="text-gray-700 leading-relaxed mb-4">{children}</p>,
   },
+
   list: {
     bullet: ({ children }) => <ul className="list-disc list-outside pl-6 mb-6 space-y-2 text-gray-700">{children}</ul>,
     number: ({ children }) => <ol className="list-decimal list-outside pl-6 mb-6 space-y-2 text-gray-700">{children}</ol>,
   },
+
   listItem: {
     bullet: ({ children }) => <li className="leading-relaxed pl-1 marker:text-coffee-medium">{children}</li>,
     number: ({ children }) => <li className="leading-relaxed pl-1 marker:text-coffee-medium marker:font-semibold">{children}</li>,
   },
+
   marks: {
     strong: ({ children }) => <strong className="font-semibold text-coffee-dark">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">{children}</code>,
+    underline: ({ children }) => <u className="underline">{children}</u>,
     link: ({ children, value }) => (
       <Link href={value.href} target={value.blank ? "_blank" : "_self"} rel={value.blank ? "noopener noreferrer" : undefined} className="text-coffee-dark hover:text-coffee-medium underline transition-colors">
         {children}
