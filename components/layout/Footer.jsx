@@ -109,7 +109,6 @@ export default function Footer() {
                 <MapPin className="w-5 h-5 text-gold mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-coffee-light">
-                    Jl. Raya Industri No. 123
                     <br />
                     Semarang, Central Java 50123
                     <br />
@@ -119,7 +118,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-gold" />
-                <p className="text-coffee-light">+62 813 2518 6680</p>
+                <p className="text-coffee-light">+90 542 179 3483</p>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-gold" />
@@ -133,10 +132,10 @@ export default function Footer() {
         <div className="border-t border-coffee-medium mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-coffee-light text-sm">© 2024 Harika Nusantara. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-coffee-light hover:text-gold transition-colors text-sm">
+            <Link href="/privacy-policy" className="text-coffee-light hover:text-gold transition-colors text-sm">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-coffee-light hover:text-gold transition-colors text-sm">
+            <Link href="/terms-of-service" className="text-coffee-light hover:text-gold transition-colors text-sm">
               Terms of Service
             </Link>
           </div>

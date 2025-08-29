@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, Card, Section, SectionHeader } from "@/components/ui/Index";
 
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Globe, Building } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Globe, Building, ChevronDown } from "lucide-react";
 import StructuredData from "@/components/seo/StructuredData";
 
 export default function ContactComponent() {
@@ -17,6 +17,51 @@ export default function ContactComponent() {
     quantity: "",
     message: "",
   });
+
+  const [openFAQ, setOpenFAQ] = useState(null);
+
+  const faqData = [
+    {
+      id: 1,
+      question: "What is the minimum order quantity?",
+      answer: "Our minimum order quantity is 1 ton for LCL shipments and 10 tons for FCL shipments. We can accommodate smaller quantities for sample orders.",
+    },
+    {
+      id: 2,
+      question: "What payment methods do you accept?",
+      answer: "We accept bank transfers, letters of credit (L/C), and other secure payment methods for international orders. Payment terms are flexible and discussed during quotation.",
+    },
+    {
+      id: 3,
+      question: "How long is the delivery time?",
+      answer: "Delivery time varies by destination: 10-15 days to Asia, 20-25 days to Europe, and 25-35 days to Americas. Express shipping options are available.",
+    },
+    {
+      id: 4,
+      question: "Do you provide product samples?",
+      answer: "Yes, we provide samples (up to 500g per product) for quality evaluation. Customer pays for shipping costs. Larger sample quantities available upon request.",
+    },
+
+    {
+      id: 5,
+      question: "Can you handle custom packaging requirements?",
+      answer: "Yes, we offer flexible packaging options including custom branding, private labeling, and specific packaging sizes to meet your market requirements.",
+    },
+    {
+      id: 6,
+      question: "What is your quality control process?",
+      answer: "We implement strict quality control at every stage - from farm selection to final packaging. All products undergo laboratory testing and third-party inspections.",
+    },
+    {
+      id: 7,
+      question: "Do you assist with import documentation?",
+      answer: "Yes, we provide complete export documentation including commercial invoices, packing lists, certificates of origin, and assist with import requirements for your country.",
+    },
+  ];
+
+  const toggleFAQ = (id) => {
+    setOpenFAQ(openFAQ === id ? null : id);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +77,26 @@ export default function ContactComponent() {
     console.log("Form submitted:", formData);
     alert("Thank you for your inquiry! We will contact you within 24 hours.");
   };
+
+  const FAQAccordion = () => (
+    <div className="mt-12 max-w-4xl mx-auto">
+      {faqData.map((faq) => (
+        <Card key={faq.id} className="mb-4 overflow-hidden">
+          <button onClick={() => toggleFAQ(faq.id)} className="w-full p-6 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-coffee-dark pr-4">{faq.question}</h3>
+              <ChevronDown className={`w-5 h-5 text-coffee-dark transition-transform duration-200 flex-shrink-0 ${openFAQ === faq.id ? "rotate-180" : ""}`} />
+            </div>
+          </button>
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openFAQ === faq.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+            <div className="px-6 pb-6">
+              <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
 
   return (
     <>
@@ -265,47 +330,7 @@ export default function ContactComponent() {
         <Section>
           <SectionHeader subtitle="Frequently Asked Questions" title="Common Export Inquiries" description="Quick answers to the most common questions about our export services." />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">What is the minimum order quantity?</h3>
-              <p className="text-muted-foreground">Our minimum order quantity is 1 ton for LCL shipments and 10 tons for FCL shipments. We can accommodate smaller quantities for sample orders.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">What payment methods do you accept?</h3>
-              <p className="text-muted-foreground">We accept bank transfers, letters of credit (L/C), and other secure payment methods for international orders. Payment terms are flexible and discussed during quotation.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">How long is the delivery time?</h3>
-              <p className="text-muted-foreground">Delivery time varies by destination: 10-15 days to Asia, 20-25 days to Europe, and 25-35 days to Americas. Express shipping options are available.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">Do you provide product samples?</h3>
-              <p className="text-muted-foreground">Yes, we provide free samples (up to 500g per product) for quality evaluation. Customer pays for shipping costs. Larger sample quantities available upon request.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">What certifications do your products have?</h3>
-              <p className="text-muted-foreground">Our products are certified with Organic, Fair Trade, Rainforest Alliance, and HACCP standards. We also provide phytosanitary and health certificates for export.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">Can you handle custom packaging requirements?</h3>
-              <p className="text-muted-foreground">Yes, we offer flexible packaging options including custom branding, private labeling, and specific packaging sizes to meet your market requirements.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">What is your quality control process?</h3>
-              <p className="text-muted-foreground">We implement strict quality control at every stage - from farm selection to final packaging. All products undergo laboratory testing and third-party inspections.</p>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold text-coffee-dark mb-3">Do you assist with import documentation?</h3>
-              <p className="text-muted-foreground">Yes, we provide complete export documentation including commercial invoices, packing lists, certificates of origin, and assist with import requirements for your country.</p>
-            </Card>
-          </div>
+          <FAQAccordion />
         </Section>
       </div>
     </>
