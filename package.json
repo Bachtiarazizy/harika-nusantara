@@ -6,21 +6,19 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "next-sitemap",
-    "sitemap": "next-sitemap"
+    "lint": "next lint"
   },
   "dependencies": {
     "@sanity/image-url": "^1.1.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.23.0",
+    "critters": "^0.0.25",
+    "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
     "lucide-react": "^0.514.0",
     "next": "15.3.3",
     "next-sanity": "^10.0.10",
-    "next-sitemap": "^4.2.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "styled-components": "^6.1.19",
     "tailwind-merge": "^3.3.1"
   },

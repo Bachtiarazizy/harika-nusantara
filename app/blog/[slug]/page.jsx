@@ -1,5 +1,4 @@
 // app/blog/[slug]/page.js
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, ArrowLeft, ChevronRight, Home } from "lucide-react";
@@ -9,37 +8,21 @@ import { Button } from "@/components/ui/Index";
 import ShareButton from "@/components/ui/ShareButton";
 import ArticleNavigation from "@/components/ui/ArticleNavigation";
 import BlogSection from "@/components/home/BlogSection";
+import StructuredData from "@/components/seo/StructuredData";
+import { generateDynamicMetadata, generateBreadcrumbs } from "@/lib/metadata";
+import { notFound } from "next/navigation";
 
-// Generate static params for all blog posts
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-
-  return posts.map((post) => ({
-    slug: post.slug.current,
-  }));
-}
-
-// Generate metadata for SEO
 export async function generateMetadata({ params }) {
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
     return {
-      title: "Post Not Found",
+      title: "Post Not Found - Harika Nusantara Blog",
+      description: "The requested blog post was not found.",
     };
   }
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      images: post.mainImage?.asset?.url ? [post.mainImage.asset.url] : [],
-      type: "article",
-      publishedTime: post.publishedAt,
-    },
-  };
+  return generateDynamicMetadata("blog", post);
 }
 
 // Enhanced Portable Text components for rich text rendering
@@ -221,6 +204,9 @@ export default async function BlogDetailPage({ params }) {
   if (!post) {
     notFound();
   }
+  const breadcrumbs = generateBreadcrumbs(`/blog/${params.slug}`, {
+    [params.slug]: post.title,
+  });
 
   // Get related posts (other recent posts for now since we simplified)
   const relatedPosts = await getAllPosts(3);
@@ -236,77 +222,77 @@ export default async function BlogDetailPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Breadcrumb Header Section */}
-      <section className="relative h-[80px] bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white"></section>
+    <>
+      <StructuredData type="blog" data={post} />
+      <StructuredData type="breadcrumb" data={{ breadcrumbs }} />
+      <div className="min-h-screen bg-white">
+        {/* Breadcrumb Header Section */}
+        <section className="relative h-[80px] bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white"></section>
 
-      {/* Article Content */}
-      <article className="max-w-4xl mx-auto px-4 py-8">
-        {/* Back Button - Above Image */}
-        <div className="mb-6">
-          <Link href="/blog">
-            <Button variant="ghost" className="hover:bg-coffee-light/10">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Blog
-            </Button>
-          </Link>
-        </div>
-
-        {/* Featured Image */}
-        {post.mainImage?.asset?.url && (
-          <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden mb-8">
-            <Image src={post.mainImage.asset.url} alt={post.title} fill className="object-cover" priority />
-          </div>
-        )}
-
-        {/* Article Header - Below Image */}
-        <header className="mb-8">
-          {/* Title */}
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-coffee-dark mb-4 leading-tight">{post.title}</h1>
-
-          {/* Excerpt */}
-          <p className="text-xl text-muted-foreground leading-relaxed mb-6">{post.excerpt}</p>
-
-          {/* Article Meta Info */}
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center">
-              <Calendar className="w-4 h-4 mr-2" />
-              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+        {/* Article Content */}
+        <article className="max-w-4xl mx-auto px-4 py-8">
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex space-x-2 text-sm">
+              {breadcrumbs.map((item, index) => (
+                <li key={index} className="flex items-center">
+                  {index > 0 && <span className="mr-2">/</span>}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-primary font-medium" aria-current="page">
+                      {item.name.length > 50 ? item.name.substring(0, 50) + "..." : item.name}
+                    </span>
+                  ) : (
+                    <a href={item.url} className="text-muted-foreground hover:text-primary">
+                      {item.name}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+          {/* Featured Image */}
+          {post.mainImage?.asset?.url && (
+            <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden mb-8">
+              <Image src={post.mainImage.asset.url} alt={post.title} fill className="object-cover" priority />
             </div>
+          )}
 
-            {/* Share Button */}
-            <ShareButton title={post.title} excerpt={post.excerpt} className="p-0 h-auto text-muted-foreground hover:text-coffee-dark" />
-          </div>
-        </header>
+          {/* Article Header - Below Image */}
+          <header className="mb-8">
+            {/* Title */}
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-coffee-dark mb-4 leading-tight">{post.title}</h1>
 
-        {/* Article Body Content */}
-        <div className="prose prose-lg max-w-none">{post.body && <PortableText value={post.body} components={portableTextComponents} />}</div>
+            {/* Excerpt */}
+            <p className="text-xl text-muted-foreground leading-relaxed mb-6">{post.excerpt}</p>
 
-        {/* Article Footer */}
-        <footer className="mt-12 pt-8">
-          {/* Navigation between articles */}
-          <ArticleNavigation previousPost={post.previousPost} nextPost={post.nextPost} />
+            {/* Article Meta Info */}
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-2" />
+                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+              </div>
 
-          {/* Bottom actions */}
-          <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-            <Link href="/blog">
-              <Button variant="outline">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Lihat Semua Artikel
-              </Button>
-            </Link>
+              {/* Share Button */}
+              <ShareButton title={post.title} excerpt={post.excerpt} className="p-0 h-auto text-muted-foreground hover:text-coffee-dark" />
+            </div>
+          </header>
 
-            <ShareButton title={post.title} excerpt={post.excerpt} />
-          </div>
-        </footer>
-      </article>
+          {/* Article Body Content */}
+          <div className="prose prose-lg max-w-none">{post.body && <PortableText value={post.body} components={portableTextComponents} />}</div>
 
-      {/* Related Posts */}
-      {filteredRelatedPosts.length > 0 && (
-        <section className="bg-coffee-light/5 py-16">
-          <BlogSection posts={filteredRelatedPosts} title="Related Articles" subtitle="Discover more coffee & cocoa stories from us" showAllButton={true} limit={3} />
-        </section>
-      )}
-    </div>
+          {/* Article Footer */}
+          <footer className="mt-12 pt-8">
+            {/* Navigation between articles */}
+            <ArticleNavigation previousPost={post.previousPost} nextPost={post.nextPost} />
+          </footer>
+        </article>
+
+        {/* Related Posts */}
+        {filteredRelatedPosts.length > 0 && (
+          <section className="bg-coffee-light/5 py-16">
+            <BlogSection posts={filteredRelatedPosts} title="Related Articles" subtitle="Discover more coffee & cocoa stories from us" showAllButton={true} limit={3} />
+          </section>
+        )}
+      </div>
+    </>
   );
 }

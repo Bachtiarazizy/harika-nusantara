@@ -3,6 +3,7 @@ import "./globals.css";
 import { Archivo } from "next/font/google";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/home/WhatsAppButton";
+import StructuredData from "@/components/seo/StructuredData";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -11,111 +12,161 @@ const archivo = Archivo({
   display: "swap",
 });
 
+// SEO Keywords yang dioptimasi untuk Indonesian Coffee & Cocoa Supplier/Exporter
+const primaryKeywords = [
+  // Primary Focus Keywords
+  "Indonesian coffee supplier",
+  "Indonesian cocoa supplier",
+  "Indonesian coffee exporter",
+  "Indonesian cocoa exporter",
+  "Indonesia coffee beans supplier",
+  "Indonesia cocoa beans supplier",
+
+  // Coffee Specific Keywords
+  "Arabica coffee beans supplier Indonesia",
+  "Robusta coffee beans exporter Indonesia",
+  "Indonesian coffee beans wholesale supplier",
+  "premium Indonesian coffee supplier",
+  "Indonesian specialty coffee exporter",
+  "Java coffee beans supplier",
+  "Sumatra coffee beans exporter",
+  "Sulawesi coffee supplier",
+  "Mandheling coffee beans supplier",
+  "Toraja coffee exporter Indonesia",
+  "green coffee beans supplier Indonesia",
+  "organic coffee beans supplier Indonesia",
+
+  // Cocoa Specific Keywords
+  "Indonesian cocoa beans supplier",
+  "Indonesian cocoa powder exporter",
+  "Indonesia cocoa products supplier",
+  "organic cocoa supplier Indonesia",
+  "sustainable cocoa exporter Indonesia",
+  "fermented cocoa beans supplier",
+  "Indonesian cocoa beans wholesale",
+  "premium cocoa products supplier Indonesia",
+
+  // Business & Trade Keywords
+  "Indonesian agricultural products supplier",
+  "B2B coffee supplier Indonesia",
+  "B2B cocoa supplier Indonesia",
+  "direct trade coffee supplier Indonesia",
+  "sustainable coffee supplier Indonesia",
+  "fair trade coffee exporter Indonesia",
+  "Indonesian plantation products supplier",
+  "international coffee trade Indonesia",
+  "coffee export company Indonesia",
+  "cocoa export company Indonesia",
+
+  // Location-Based Keywords
+  "Jakarta coffee supplier",
+  "Indonesian coffee supply chain",
+  "Southeast Asian coffee supplier",
+  "Asian coffee exporter",
+  "Indonesian agricultural exporter",
+];
+
 export const metadata = {
-  title: "Harika Nusantara - Premium Indonesian Coffee & Cocoa Exporter | Arabica, Robusta, Cocoa Beans Wholesale",
+  title: {
+    default: "Indonesian Coffee & Cocoa Supplier | Premium Arabica Robusta Exporter - Harika Nusantara",
+  },
   description:
-    "Leading Indonesian coffee and cocoa exporter specializing in premium Arabica, Robusta coffee beans and high-quality cocoa products. Direct sourcing from Java, Sumatra, Sulawesi plantations for international wholesale markets. Certified organic, fair trade, sustainable export solutions.",
-  keywords: [
-    // Primary keywords
-    "Indonesian coffee exporter",
-    "cocoa exporter Indonesia",
-    "coffee beans wholesale",
-    "cocoa beans wholesale",
-    "premium coffee export",
+    "Leading Indonesian coffee & cocoa supplier and exporter. Direct sourcing of premium Arabica, Robusta coffee beans and high-quality cocoa products from Java, Sumatra, Sulawesi plantations for international wholesale markets. Trusted B2B supplier since 2020.",
+  keywords: primaryKeywords.join(", "),
 
-    // Coffee-specific keywords
-    "Arabica coffee beans Indonesia",
-    "Robusta coffee beans export",
-    "Java coffee beans wholesale",
-    "Sumatra coffee exporter",
-    "Sulawesi coffee beans",
-    "Mandheling coffee export",
-    "Toraja coffee beans",
-    "specialty coffee Indonesia",
-    "green coffee beans export",
-
-    // Cocoa-specific keywords
-    "Indonesian cocoa beans",
-    "cocoa powder export",
-    "organic cocoa Indonesia",
-    "sustainable cocoa export",
-    "cocoa products wholesale",
-    "fermented cocoa beans",
-
-    // Business and quality keywords
-    "coffee export company",
-    "international coffee trade",
-    "B2B coffee supplier",
-    "certified organic coffee",
-    "fair trade coffee export",
-    "sustainable coffee sourcing",
-    "direct trade coffee",
-    "coffee plantation Indonesia",
-    "cocoa plantation sourcing",
-  ].join(", "),
-  authors: [{ name: "Harika Nusantara", url: "https://harika-nusantara.com" }],
-  creator: "Harika Nusantara",
+  // Enhanced metadata
+  authors: [
+    {
+      name: "Harika Nusantara",
+      url: "https://harikanusantara.com",
+    },
+  ],
+  creator: "Harika Nusantara - Indonesian Coffee & Cocoa Supplier",
   publisher: "Harika Nusantara",
-  category: "Agriculture, Export, International Trade",
-  classification: "Business",
+
+  // Business categorization
+  category: "Agriculture, Coffee Supply, Cocoa Export, International Trade, B2B Wholesale",
+  classification: "Business - Agricultural Supplier & Exporter",
+
+  // Technical settings
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://harika-nusantara.com"),
+  metadataBase: new URL("https://harikanusantara.com"),
+
+  // Enhanced alternates with hreflang
   alternates: {
     canonical: "/",
     languages: {
-      "en-US": "/en",
+      "en-US": "/",
+      en: "/en",
       "id-ID": "/id",
+      id: "/id",
+    },
+    types: {
+      "application/rss+xml": "/feed.xml",
+      "application/atom+xml": "/feed.atom",
     },
   },
+
+  // Enhanced Open Graph
   openGraph: {
-    title: "Harika Nusantara - Premium Indonesian Coffee & Cocoa Exporter",
-    description: "Leading exporter of premium Indonesian coffee and cocoa. Direct sourcing from Java, Sumatra, Sulawesi plantations. Arabica, Robusta, organic cocoa for international wholesale markets.",
-    url: "https://harika-nusantara.com",
-    siteName: "Harika Nusantara",
+    title: "Indonesian Coffee & Cocoa Supplier | Premium Arabica Robusta Exporter",
+    description: "Leading Indonesian coffee & cocoa supplier. Direct sourcing of premium Arabica, Robusta coffee beans and cocoa products from Java, Sumatra, Sulawesi plantations for international B2B markets.",
+    url: "https://harikanusantara.com",
+    siteName: "Harika Nusantara - Indonesian Coffee & Cocoa Supplier",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Harika Nusantara - Premium Indonesian Coffee and Cocoa Beans Export",
+        alt: "Harika Nusantara - Indonesian Coffee & Cocoa Supplier and Exporter",
         type: "image/jpeg",
       },
       {
-        url: "/coffee-beans-og.jpg",
+        url: "/indonesian-coffee-beans-supplier.jpg",
         width: 1200,
         height: 630,
-        alt: "Premium Indonesian Arabica and Robusta Coffee Beans",
+        alt: "Premium Indonesian Arabica and Robusta Coffee Beans Supplier",
         type: "image/jpeg",
       },
       {
-        url: "/cocoa-beans-og.jpg",
+        url: "/indonesian-cocoa-supplier.jpg",
         width: 1200,
         height: 630,
-        alt: "High Quality Indonesian Cocoa Beans and Products",
+        alt: "High Quality Indonesian Cocoa Products Supplier and Exporter",
         type: "image/jpeg",
       },
     ],
     locale: "en_US",
     type: "website",
     countryName: "Indonesia",
+    emails: ["info@harika-nusantara.com"],
+    phoneNumbers: ["+90-542-179-3483"],
+    faxNumbers: ["+90-542-179-3483"],
+    ttl: 604800, // 7 days
   },
+
+  // Enhanced Twitter metadata
   twitter: {
     card: "summary_large_image",
     site: "@HarikaNusantara",
     creator: "@HarikaNusantara",
-    title: "Harika Nusantara - Premium Indonesian Coffee & Cocoa Exporter",
-    description: "Leading Indonesian exporter of premium coffee and cocoa. Arabica, Robusta, organic cocoa from Java, Sumatra, Sulawesi for international markets.",
+    title: "Indonesian Coffee & Cocoa Supplier | Premium Arabica Robusta Exporter",
+    description: "Leading Indonesian coffee & cocoa supplier. Direct sourcing of premium Arabica, Robusta coffee beans and cocoa products for international B2B markets.",
     images: [
       {
         url: "/og-image.jpg",
-        alt: "Harika Nusantara - Indonesian Coffee & Cocoa Export",
+        alt: "Harika Nusantara - Indonesian Coffee & Cocoa Supplier",
+        width: 1200,
+        height: 630,
       },
     ],
   },
+
+  // Enhanced robots configuration
   robots: {
     index: true,
     follow: true,
@@ -128,172 +179,208 @@ export const metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+    // Additional bot instructions
+    bingBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+    },
   },
+
+  // Enhanced verification codes
   verification: {
     google: "your-google-verification-code",
     yandex: "your-yandex-verification-code",
     yahoo: "your-yahoo-verification-code",
     other: {
       bing: "your-bing-verification-code",
+      baidu: "your-baidu-verification-code",
+      facebook: "your-facebook-domain-verification",
     },
   },
+
+  // Enhanced additional metadata
   other: {
+    // Geographic targeting
     "geo.region": "ID",
     "geo.country": "Indonesia",
-    "geo.placename": "Indonesia",
-    ICBM: "-6.2088, 106.8456", // Jakarta coordinates as business center
-    "DC.title": "Harika Nusantara - Indonesian Coffee & Cocoa Exporter",
+    "geo.placename": "Jakarta, Indonesia",
+    ICBM: "-6.2088, 106.8456", // Jakarta coordinates
+
+    // Dublin Core metadata
+    "DC.title": "Indonesian Coffee & Cocoa Supplier - Harika Nusantara",
     "DC.creator": "Harika Nusantara",
-    "DC.subject": "Indonesian Coffee Export, Cocoa Export, Arabica, Robusta",
-    "DC.description": "Premium Indonesian coffee and cocoa exporter specializing in Arabica, Robusta coffee beans and cocoa products for international markets",
+    "DC.subject": "Indonesian Coffee Supplier, Cocoa Exporter, Arabica, Robusta, B2B Wholesale",
+    "DC.description": "Leading Indonesian coffee and cocoa supplier specializing in premium Arabica, Robusta coffee beans and cocoa products for international B2B wholesale markets",
     "DC.publisher": "Harika Nusantara",
-    "DC.contributor": "Harika Nusantara",
+    "DC.contributor": "Harika Nusantara Team",
     "DC.date": new Date().toISOString(),
-    "DC.type": "Text",
+    "DC.type": "InteractiveResource",
     "DC.format": "text/html",
-    "DC.identifier": "https://harika-nusantara.com",
-    "DC.language": "en",
-    "DC.coverage": "Indonesia, International",
-    "DC.rights": "Copyright Harika Nusantara",
+    "DC.identifier": "https://harikanusantara.com",
+    "DC.language": "en-US",
+    "DC.coverage": "Indonesia, International, Worldwide",
+    "DC.rights": "Copyright © 2024 Harika Nusantara. All rights reserved.",
+
+    // Business metadata
+    "business.contact_data.street_address": "Jakarta, Indonesia",
+    "business.contact_data.locality": "Jakarta",
+    "business.contact_data.region": "Jakarta",
+    "business.contact_data.postal_code": "10xxx",
+    "business.contact_data.country_name": "Indonesia",
+
+    // Industry classifications
+    industry: "Agricultural Export, Coffee Supply, Cocoa Export",
+    business_type: "B2B Supplier, Exporter, Agricultural Products",
+
+    // Additional SEO tags
+    "theme-color": "#8B4513",
+    "msapplication-TileColor": "#8B4513",
+    "apple-mobile-web-app-title": "Harika Nusantara",
+    "application-name": "Harika Nusantara - Indonesian Coffee & Cocoa Supplier",
+
+    // Social media optimization
+    "article:publisher": "https://www.facebook.com/HarikaNusantara",
+    "article:author": "https://www.linkedin.com/company/harika-nusantara",
+
+    // Mobile optimization
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
+
+    // Performance hints
+    "dns-prefetch": "//fonts.googleapis.com",
+    preconnect: "//fonts.gstatic.com",
   },
 };
 
 export default function RootLayout({ children }) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://harika-nusantara.com/#organization",
-        name: "Harika Nusantara",
-        url: "https://harika-nusantara.com",
-        logo: {
-          "@type": "ImageObject",
-          url: "https://harika-nusantara.com/logo.png",
-          width: 300,
-          height: 100,
-        },
-        description: "Leading Indonesian coffee and cocoa exporter specializing in premium Arabica, Robusta coffee beans and high-quality cocoa products for international wholesale markets.",
-        address: {
-          "@type": "PostalAddress",
-          addressCountry: "Indonesia",
-          addressRegion: "Jakarta",
-        },
-        contactPoint: {
-          "@type": "ContactPoint",
-          telephone: "+62-xxx-xxxx-xxxx",
-          contactType: "sales",
-          availableLanguage: ["English", "Indonesian"],
-        },
-        sameAs: ["https://www.linkedin.com/company/harika-nusantara", "https://twitter.com/HarikaNusantara", "https://www.facebook.com/HarikaNusantara"],
-        foundingDate: "2020",
-        numberOfEmployees: "50-100",
-        industry: "Agriculture Export",
-        keywords: "Indonesian coffee export, cocoa export, Arabica beans, Robusta coffee, sustainable sourcing",
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://harika-nusantara.com/#website",
-        url: "https://harika-nusantara.com",
-        name: "Harika Nusantara",
-        description: "Premium Indonesian Coffee & Cocoa Exporter",
-        publisher: {
-          "@id": "https://harika-nusantara.com/#organization",
-        },
-        inLanguage: "en-US",
-        potentialAction: {
-          "@type": "SearchAction",
-          target: "https://harika-nusantara.com/search?q={search_term_string}",
-          "query-input": "required name=search_term_string",
-        },
-      },
-      {
-        "@type": "Product",
-        "@id": "https://harika-nusantara.com/#coffee-products",
-        name: "Indonesian Coffee Beans",
-        description: "Premium Arabica and Robusta coffee beans sourced directly from Java, Sumatra, and Sulawesi plantations",
-        brand: {
-          "@id": "https://harika-nusantara.com/#organization",
-        },
-        manufacturer: {
-          "@id": "https://harika-nusantara.com/#organization",
-        },
-        category: "Coffee Beans",
-        offers: {
-          "@type": "Offer",
-          availability: "https://schema.org/InStock",
-          priceCurrency: "USD",
-          seller: {
-            "@id": "https://harika-nusantara.com/#organization",
-          },
-        },
-      },
-      {
-        "@type": "Product",
-        "@id": "https://harika-nusantara.com/#cocoa-products",
-        name: "Indonesian Cocoa Products",
-        description: "High-quality cocoa beans and cocoa powder sourced from sustainable Indonesian plantations",
-        brand: {
-          "@id": "https://harika-nusantara.com/#organization",
-        },
-        manufacturer: {
-          "@id": "https://harika-nusantara.com/#organization",
-        },
-        category: "Cocoa Products",
-        offers: {
-          "@type": "Offer",
-          availability: "https://schema.org/InStock",
-          priceCurrency: "USD",
-          seller: {
-            "@id": "https://harika-nusantara.com/#organization",
-          },
-        },
-      },
-    ],
-  };
-
   return (
     <html lang="en" className={`${archivo.variable} scroll-smooth`}>
       <head>
-        {/* Favicon and icons */}
-        <link rel="icon" href="/favicon.ico" />
+        {/* Enhanced Favicon and icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#8b4513" />
 
-        {/* Theme and viewport */}
+        {/* Theme and viewport - Enhanced */}
         <meta name="theme-color" content="#8B4513" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="msapplication-TileColor" content="#8b4513" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-        {/* Additional SEO meta tags */}
+        {/* Enhanced SEO meta tags */}
         <meta name="language" content="English" />
-        <meta name="revisit-after" content="7 days" />
+        <meta name="revisit-after" content="3 days" />
         <meta name="distribution" content="global" />
         <meta name="rating" content="general" />
         <meta name="HandheldFriendly" content="True" />
         <meta name="MobileOptimized" content="320" />
+        <meta name="referrer" content="origin-when-cross-origin" />
 
-        {/* Preconnect to external domains for performance */}
+        {/* Business-specific meta tags */}
+        <meta name="target" content="B2B buyers, Coffee importers, Cocoa buyers, International trade" />
+        <meta name="audience" content="Coffee industry, Food industry, International buyers" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="distribution" content="Global" />
+        <meta name="rating" content="Safe For Kids" />
+
+        {/* Enhanced performance optimization */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+        <link rel="dns-prefetch" href="//connect.facebook.net" />
 
-        {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+        {/* Resource hints for common assets */}
+        <link rel="prefetch" href="/indonesian-coffee-beans.jpg" />
+        <link rel="prefetch" href="/indonesian-cocoa-products.jpg" />
+
+        {/* Structured Data Component */}
+        <StructuredData type="homepage" />
+
+        {/* Enhanced Breadcrumb for homepage */}
+        <StructuredData
+          type="breadcrumb"
+          data={{
+            breadcrumbs: [
+              {
+                name: "Home",
+                url: "https://harikanusantara.com/",
+              },
+            ],
           }}
         />
 
-        {/* Additional structured data for breadcrumbs (to be added on individual pages) */}
-        {/* Hreflang tags (to be implemented when multi-language support is added) */}
+        {/* Additional feed links */}
+        <link rel="alternate" type="application/rss+xml" title="Harika Nusantara Coffee & Cocoa Industry News" href="/feed.xml" />
+        <link rel="alternate" type="application/atom+xml" title="Harika Nusantara Blog Feed" href="/feed.atom" />
+
+        {/* Canonical link for homepage */}
+        <link rel="canonical" href="https://harikanusantara.com/" />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
+        {/* Skip to content for accessibility */}
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-primary text-primary-foreground px-4 py-2 z-50">
+          Skip to main content
+        </a>
+
         <Navigation />
-        {children}
+
+        <main id="main-content" role="main">
+          {children}
+        </main>
+
         <WhatsAppButton />
         <Footer />
+
+        {/* Additional structured data for organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "What coffee products does Harika Nusantara supply?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "We supply premium Indonesian coffee beans including Arabica and Robusta varieties from Java, Sumatra, and Sulawesi plantations. Our products include green coffee beans, specialty coffee, organic coffee, and various regional varieties like Mandheling and Toraja.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Do you export Indonesian cocoa products internationally?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we are a leading Indonesian cocoa exporter supplying high-quality cocoa beans, cocoa powder, and other cocoa products to international markets. We source from sustainable Indonesian plantations with proper certifications.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "What regions of Indonesia do you source from?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "We source directly from major Indonesian coffee and cocoa producing regions including Java, Sumatra, Sulawesi, and other key plantation areas. This allows us to offer diverse flavor profiles and maintain consistent quality.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Do you provide B2B wholesale services?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, we specialize in B2B wholesale supply of Indonesian coffee and cocoa products for international buyers, importers, roasters, and food manufacturers. We offer competitive pricing and reliable supply chain services.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </body>
     </html>
   );

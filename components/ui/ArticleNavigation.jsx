@@ -15,7 +15,7 @@ export default function ArticleNavigation({ previousPost, nextPost }) {
             <div>
               <div className="flex items-center text-sm text-muted-foreground mb-1">
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Artikel Sebelumnya
+                Previous Article
               </div>
               <div className="font-medium text-coffee-dark line-clamp-2">{previousPost.title}</div>
             </div>
@@ -31,7 +31,7 @@ export default function ArticleNavigation({ previousPost, nextPost }) {
           <Button variant="ghost" className="w-full justify-end p-4 h-auto text-right hover:bg-coffee-light/5">
             <div>
               <div className="flex items-center justify-end text-sm text-muted-foreground mb-1">
-                Artikel Selanjutnya
+                Next Article
                 <ArrowRight className="w-4 h-4 ml-1" />
               </div>
               <div className="font-medium text-coffee-dark line-clamp-2">{nextPost.title}</div>

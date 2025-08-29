@@ -1,16 +1,8 @@
 import BlogPageClient from "@/components/home/BlogPageClient";
+import { generatePageMetadata } from "@/lib/metadata";
 import { getAllPosts } from "@/lib/sanityQueries";
 
-// Generate metadata for SEO
-export const metadata = {
-  title: "Blog - Stories from Indonesian Coffee & Cocoa Farms",
-  description: "Discover inspiring stories from Indonesian coffee and cocoa farmers, sustainable farming tips, and the journey from farm to your cup.",
-  openGraph: {
-    title: "Blog - Stories from Indonesian Coffee & Cocoa Farms",
-    description: "Discover inspiring stories from Indonesian coffee and cocoa farmers, sustainable farming tips, and the journey from farm to your cup.",
-    type: "website",
-  },
-};
+export const metadata = generatePageMetadata("blog");
 
 export default async function BlogIndexPage({ searchParams }) {
   // Get all posts on the server

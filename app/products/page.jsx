@@ -4,23 +4,14 @@ import { Coffee, Leaf, Award, Download, CheckCircle, Star, Eye } from "lucide-re
 import Image from "next/image";
 import Link from "next/link";
 import { getAllProducts, getAllProductCategories } from "@/lib/sanityProductQueries";
+import StructuredData from "@/components/seo/StructuredData";
+import { generatePageMetadata } from "@/lib/metadata";
 
 // Dynamic icon mapping
 const iconMap = {
   Coffee,
   Leaf,
   Award,
-};
-
-export const metadata = {
-  title: "Products - Premium Indonesian Coffee Beans & Cocoa",
-  description: "Explore our premium Indonesian coffee and cocoa products. Arabica, Robusta coffee beans and cocoa powder from Java, Sumatra, Sulawesi. ISO certified, organic options available.",
-  keywords: "Indonesian coffee beans, Arabica coffee Indonesia, Robusta coffee beans, cocoa beans Indonesia, cocoa powder, Java coffee, Sumatra coffee, Sulawesi coffee, organic coffee, fair trade coffee",
-  openGraph: {
-    title: "Premium Indonesian Coffee & Cocoa Products - Harika Nusantara",
-    description: "Premium Arabica, Robusta coffee beans and cocoa products from Indonesian plantations. ISO certified with organic and fair trade options.",
-    images: ["/images/coffee-beans-premium.webp"],
-  },
 };
 
 // Product Card Component
@@ -159,6 +150,8 @@ function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
   );
 }
 
+export const metadata = generatePageMetadata("products");
+
 export default async function ProductsPage({ searchParams }) {
   const products = await getAllProducts();
   const categories = await getAllProductCategories();
@@ -168,96 +161,60 @@ export default async function ProductsPage({ searchParams }) {
   const cocoaProducts = products.filter((p) => p.category?.slug?.current === "cocoa" || p.productType.includes("cocoa"));
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-6">Our Products</h1>
-          <p className="text-xl text-coffee-light max-w-3xl mx-auto">Premium Indonesian coffee beans and cocoa products, carefully selected and processed to meet international quality standards.</p>
-        </div>
-      </section>
-
-      {/* Coffee Products Section */}
-      {coffeeProducts.length > 0 && (
-        <Section id="coffee">
-          <SectionHeader
-            subtitle="Coffee Products"
-            title="Premium Indonesian Coffee Beans"
-            description="From the volcanic soils of Java, Sumatra, and Sulawesi, we offer the finest Arabica and Robusta coffee beans for international markets."
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
-            {coffeeProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+    <>
+      <StructuredData type="homepage" />
+      <div className="min-h-screen">
+        {/* Hero Section */}
+        <section className="relative py-24 bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6">Our Products</h1>
+            <p className="text-xl text-coffee-light max-w-3xl mx-auto">Premium Indonesian coffee beans and cocoa products, carefully selected and processed to meet international quality standards.</p>
           </div>
-        </Section>
-      )}
+        </section>
 
-      {/* Cocoa Products Section */}
-      {cocoaProducts.length > 0 && (
-        <Section id="cocoa" className="bg-coffee-light/10">
-          <SectionHeader subtitle="Cocoa Products" title="Premium Indonesian Cocoa" description="High-quality cocoa beans and powder from Indonesian plantations, perfect for chocolate manufacturing and confectionery applications." />
+        {/* Coffee Products Section */}
+        {coffeeProducts.length > 0 && (
+          <Section id="coffee">
+            <SectionHeader
+              subtitle="Coffee Products"
+              title="Premium Indonesian Coffee Beans"
+              description="From the volcanic soils of Java, Sumatra, and Sulawesi, we offer the finest Arabica and Robusta coffee beans for international markets."
+            />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
-            {cocoaProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* All Products Section (if no category-specific sections) */}
-      {coffeeProducts.length === 0 && cocoaProducts.length === 0 && products.length > 0 && (
-        <Section>
-          <SectionHeader subtitle="Our Products" title="Premium Indonesian Products" description="Discover our full range of premium coffee beans and cocoa products from Indonesian plantations." />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {/* Quality Certifications */}
-      {/* <Section className="bg-gray-50">
-        <SectionHeader subtitle="Quality Assurance" title="International Certifications & Standards" description="Our products meet the highest international quality standards and certifications." />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-          <Card className="p-6 text-center">
-            <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Award className="w-8 h-8 text-gold" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+              {coffeeProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
             </div>
-            <h3 className="font-semibold text-coffee-dark mb-2">ISO 22000</h3>
-            <p className="text-muted-foreground text-sm">Food Safety Management System</p>
-          </Card>
+          </Section>
+        )}
 
-          <Card className="p-6 text-center">
-            <div className="w-16 h-16 bg-forest-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Leaf className="w-8 h-8 text-forest-green" />
-            </div>
-            <h3 className="font-semibold text-coffee-dark mb-2">Organic Certified</h3>
-            <p className="text-muted-foreground text-sm">Certified Organic Products</p>
-          </Card>
+        {/* Cocoa Products Section */}
+        {cocoaProducts.length > 0 && (
+          <Section id="cocoa" className="bg-coffee-light/10">
+            <SectionHeader subtitle="Cocoa Products" title="Premium Indonesian Cocoa" description="High-quality cocoa beans and powder from Indonesian plantations, perfect for chocolate manufacturing and confectionery applications." />
 
-          <Card className="p-6 text-center">
-            <div className="w-16 h-16 bg-coffee-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Coffee className="w-8 h-8 text-coffee-dark" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+              {cocoaProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
             </div>
-            <h3 className="font-semibold text-coffee-dark mb-2">Fair Trade</h3>
-            <p className="text-muted-foreground text-sm">Fair Trade Certified</p>
-          </Card>
+          </Section>
+        )}
 
-          <Card className="p-6 text-center">
-            <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Award className="w-8 h-8 text-gold" />
+        {/* All Products Section (if no category-specific sections) */}
+        {coffeeProducts.length === 0 && cocoaProducts.length === 0 && products.length > 0 && (
+          <Section>
+            <SectionHeader subtitle="Our Products" title="Premium Indonesian Products" description="Discover our full range of premium coffee beans and cocoa products from Indonesian plantations." />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mt-12">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
             </div>
-            <h3 className="font-semibold text-coffee-dark mb-2">HACCP</h3>
-            <p className="text-muted-foreground text-sm">Hazard Analysis Critical Control</p>
-          </Card>
-        </div>
-      </Section> */}
-    </div>
+          </Section>
+        )}
+      </div>
+    </>
   );
 }

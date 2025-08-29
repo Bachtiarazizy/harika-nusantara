@@ -1,5 +1,4 @@
 // app/products/[slug]/page.js
-import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, ArrowLeft, CheckCircle, Star, Download, Eye, Award, Coffee, Leaf } from "lucide-react";
@@ -7,38 +6,22 @@ import { PortableText } from "@portabletext/react";
 import { getProductBySlug, getAllProductSlugs, getRelatedProducts } from "@/lib/sanityProductQueries";
 import { Button, Card, Section, SectionHeader } from "@/components/ui/Index";
 import ShareButton from "@/components/ui/ShareButton";
+import { notFound } from "next/navigation";
+import StructuredData from "@/components/seo/StructuredData";
+import { generateBreadcrumbs, generateDynamicMetadata, generatePageMetadata } from "@/lib/metadata";
 
-// Generate static params for all products
-export async function generateStaticParams() {
-  const products = await getAllProductSlugs();
-
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
-
-// Generate metadata for SEO
 export async function generateMetadata({ params }) {
-  const product = await getProductBySlug(params.slug);
+  const resolvedParams = await params;
+  const product = await getProductBySlug(resolvedParams.slug);
 
   if (!product) {
     return {
-      title: "Product Not Found",
+      title: "Product Not Found - Harika Nusantara",
+      description: "The requested product was not found.",
     };
   }
 
-  return {
-    title: product.seo?.metaTitle || `${product.title} - Premium Indonesian Product`,
-    description: product.seo?.metaDescription || product.shortDescription || product.fullDescription,
-    keywords: product.seo?.metaKeywords?.join(", ") || `${product.title}, Indonesian ${product.category?.name}`,
-    openGraph: {
-      title: product.seo?.metaTitle || product.title,
-      description: product.seo?.metaDescription || product.shortDescription,
-      images: product.mainImage?.asset?.url ? [product.mainImage.asset.url] : [],
-      type: "article",
-      publishedTime: product.publishedAt,
-    },
-  };
+  return generateDynamicMetadata("product", product);
 }
 
 // Portable Text components for product content
@@ -87,10 +70,6 @@ const productPortableTextComponents = {
 
 // Related Product Card Component
 function RelatedProductCard({ product }) {
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, index) => <Star key={index} className={`w-3 h-3 ${index < rating ? "text-gold fill-current" : "text-gray-300"}`} />);
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-48 overflow-hidden">
@@ -103,7 +82,6 @@ function RelatedProductCard({ product }) {
         )}
       </div>
       <div className="p-4">
-        <div className="flex items-center gap-1 mb-2">{renderStars(product.rating || 5)}</div>
         <h3 className="font-semibold text-coffee-dark mb-2 line-clamp-2">{product.title}</h3>
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{product.shortDescription}</p>
         <Link href={`/products/${product.slug.current}`}>
@@ -118,184 +96,192 @@ function RelatedProductCard({ product }) {
 }
 
 export default async function ProductDetailPage({ params }) {
-  const product = await getProductBySlug(params.slug);
+  const resolvedParams = await params;
+  const product = await getProductBySlug(resolvedParams.slug);
 
   if (!product) {
     notFound();
   }
 
+  const breadcrumbs = generateBreadcrumbs(`/products/${resolvedParams.slug}`, {
+    [resolvedParams.slug]: product.title,
+  });
+
   // Get related products
   const relatedProducts = await getRelatedProducts(product.category._id, product._id, 3);
 
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, index) => <Star key={index} className={`w-5 h-5 ${index < rating ? "text-gold fill-current" : "text-gray-300"}`} />);
-  };
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Breadcrumb Header */}
-      <section className="relative h-[80px] bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white"></section>
+    <>
+      <StructuredData type="Product" data={product} />
+      <StructuredData type="breadcrumb" data={{ breadcrumbs }} />
+      <div className="min-h-screen bg-white">
+        <section className="relative h-[80px] bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white"></section>
 
-      {/* Product Content */}
-      <article className="max-w-6xl mx-auto px-4 py-8">
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link href="/products">
-            <Button variant="ghost" className="hover:bg-coffee-light/10">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Products
-            </Button>
-          </Link>
-        </div>
+        {/* Product Content */}
+        <article className="max-w-6xl mx-auto px-4 py-8">
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="flex space-x-2 text-sm">
+              {breadcrumbs.map((item, index) => (
+                <li key={index} className="flex items-center">
+                  {index > 0 && <span className="mr-2">/</span>}
+                  {index === breadcrumbs.length - 1 ? (
+                    <span className="text-primary font-medium" aria-current="page">
+                      {item.name}
+                    </span>
+                  ) : (
+                    <a href={item.url} className="text-muted-foreground hover:text-primary">
+                      {item.name}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-        {/* Product Header */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Product Images */}
-          <div className="space-y-4">
-            {/* Main Image */}
-            {product.mainImage?.asset?.url && (
-              <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
-                <Image src={product.mainImage.asset.url} alt={product.mainImage.alt || product.title} fill className="object-cover" priority />
-              </div>
-            )}
-
-            {/* Gallery */}
-            {product.gallery && product.gallery.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
-                {product.gallery.slice(0, 3).map((image, index) => (
-                  <div key={index} className="relative h-24 rounded-lg overflow-hidden">
-                    <Image src={image.asset.url} alt={image.alt || `${product.title} image ${index + 1}`} fill className="object-cover hover:scale-110 transition-transform duration-300 cursor-pointer" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Product Info */}
-          <div>
-            {/* Category Badge */}
-            <div className="mb-4">
-              <span className={`text-sm font-medium px-3 py-1 rounded-full bg-${product.category?.color || "coffee-dark"}/10 text-${product.category?.color || "coffee-dark"}`}>{product.category?.name}</span>
-            </div>
-
-            {/* Title & Rating */}
-            <div className="mb-4">
-              <h1 className="text-3xl md:text-4xl font-bold text-coffee-dark mb-3">{product.title}</h1>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1">{renderStars(product.rating || 5)}</div>
-                <span className="text-sm text-muted-foreground">({product.rating || 5}.0)</span>
-              </div>
-            </div>
-
-            {/* Short Description */}
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">{product.shortDescription}</p>
-
-            {/* Full Description */}
-            {product.fullDescription && <p className="text-gray-700 leading-relaxed mb-8">{product.fullDescription}</p>}
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button size="md" className="flex-1">
-                Request Quote
-              </Button>
-
-              {product.specificationSheet?.asset?.url && (
-                <Button variant="outline" size="md" asChild className="flex items-center">
-                  <a href={product.specificationSheet.asset.url} download={product.specificationSheet.asset.originalFilename} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Specs
-                  </a>
-                </Button>
+          {/* Product Header */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+            {/* Product Images */}
+            <div className="space-y-4">
+              {/* Main Image */}
+              {product.mainImage?.asset?.url && (
+                <div className="relative w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden">
+                  <Image src={product.mainImage.asset.url} alt={product.mainImage.alt || product.title} fill className="object-cover" priority />
+                </div>
               )}
 
-              {/* <ShareButton title={product.title} excerpt={product.shortDescription} size="lg" /> */}
-            </div>
-
-            {/* Quick Specs */}
-            {product.specifications && product.specifications.length > 0 && (
-              <div className="border rounded-lg p-6 bg-gray-50">
-                <h3 className="font-semibold text-coffee-dark mb-4">Key Specifications</h3>
-                <div className="space-y-3">
-                  {product.specifications.slice(0, 5).map((spec, index) => (
-                    <div key={index} className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-600">{spec.label}</span>
-                      <span className="text-sm text-coffee-dark font-semibold">{spec.value}</span>
+              {/* Gallery */}
+              {product.gallery && product.gallery.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
+                  {product.gallery.slice(0, 3).map((image, index) => (
+                    <div key={index} className="relative h-24 rounded-lg overflow-hidden">
+                      <Image src={image.asset.url} alt={image.alt || `${product.title} image ${index + 1}`} fill className="object-cover hover:scale-110 transition-transform duration-300 cursor-pointer" />
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <div>
+              {/* Category Badge */}
+              <div className="mb-4">
+                <span className={`text-sm font-medium px-3 py-1 rounded-full bg-${product.category?.color || "coffee-dark"}/10 text-${product.category?.color || "coffee-dark"}`}>{product.category?.name}</span>
               </div>
+
+              {/* Title & Rating */}
+              <div className="mb-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-coffee-dark mb-3">{product.title}</h1>
+              </div>
+
+              {/* Short Description */}
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">{product.shortDescription}</p>
+
+              {/* Full Description */}
+              {product.fullDescription && <p className="text-gray-700 leading-relaxed mb-8">{product.fullDescription}</p>}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Button size="md" className="flex-1">
+                  Request Quote
+                </Button>
+
+                {product.specificationSheet?.asset?.url && (
+                  <Button variant="outline" size="md" asChild className="flex items-center">
+                    <a href={product.specificationSheet.asset.url} download={product.specificationSheet.asset.originalFilename} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Specs
+                    </a>
+                  </Button>
+                )}
+
+                {/* <ShareButton title={product.title} excerpt={product.shortDescription} size="lg" /> */}
+              </div>
+
+              {/* Quick Specs */}
+              {product.specifications && product.specifications.length > 0 && (
+                <div className="border rounded-lg p-6 bg-gray-50">
+                  <h3 className="font-semibold text-coffee-dark mb-4">Key Specifications</h3>
+                  <div className="space-y-3">
+                    {product.specifications.slice(0, 5).map((spec, index) => (
+                      <div key={index} className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-600">{spec.label}</span>
+                        <span className="text-sm text-coffee-dark font-semibold">{spec.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Detailed Specifications */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {/* Full Specifications */}
+            {product.specifications && product.specifications.length > 5 && (
+              <Card className="p-6">
+                <h3 className="font-semibold text-coffee-dark mb-4 flex items-center">
+                  <CheckCircle className="w-5 h-5 mr-2 text-forest-green" />
+                  Complete Specifications
+                </h3>
+                <div className="space-y-3">
+                  {product.specifications.map((spec, index) => (
+                    <div key={index} className="flex items-start">
+                      <CheckCircle className="w-4 h-4 text-forest-green mr-2 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-sm font-medium text-gray-700">{spec.label}: </span>
+                        <span className="text-sm text-gray-600">{spec.value}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Origins */}
+            {product.origins && product.origins.length > 0 && (
+              <Card className="p-6">
+                <h3 className="font-semibold text-coffee-dark mb-4">Origins Available</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.origins.map((origin, index) => (
+                    <span key={index} className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">
+                      {origin}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Processing Methods */}
+            {product.processingMethods && product.processingMethods.length > 0 && (
+              <Card className="p-6">
+                <h3 className="font-semibold text-coffee-dark mb-4">Processing Methods</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.processingMethods.map((method, index) => (
+                    <span key={index} className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">
+                      {method}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Quality Grades */}
+            {product.qualityGrades && product.qualityGrades.length > 0 && (
+              <Card className="p-6">
+                <h3 className="font-semibold text-coffee-dark mb-4">Quality Grades</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.qualityGrades.map((grade, index) => (
+                    <span key={index} className="px-3 py-1 bg-gold/20 text-gold-dark text-sm rounded-full">
+                      {grade}
+                    </span>
+                  ))}
+                </div>
+              </Card>
             )}
           </div>
-        </div>
 
-        {/* Detailed Specifications */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {/* Full Specifications */}
-          {product.specifications && product.specifications.length > 5 && (
-            <Card className="p-6">
-              <h3 className="font-semibold text-coffee-dark mb-4 flex items-center">
-                <CheckCircle className="w-5 h-5 mr-2 text-forest-green" />
-                Complete Specifications
-              </h3>
-              <div className="space-y-3">
-                {product.specifications.map((spec, index) => (
-                  <div key={index} className="flex items-start">
-                    <CheckCircle className="w-4 h-4 text-forest-green mr-2 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="text-sm font-medium text-gray-700">{spec.label}: </span>
-                      <span className="text-sm text-gray-600">{spec.value}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          {/* Origins */}
-          {product.origins && product.origins.length > 0 && (
-            <Card className="p-6">
-              <h3 className="font-semibold text-coffee-dark mb-4">Origins Available</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.origins.map((origin, index) => (
-                  <span key={index} className="px-3 py-1 bg-coffee-light/20 text-coffee-dark text-sm rounded-full">
-                    {origin}
-                  </span>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          {/* Processing Methods */}
-          {product.processingMethods && product.processingMethods.length > 0 && (
-            <Card className="p-6">
-              <h3 className="font-semibold text-coffee-dark mb-4">Processing Methods</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.processingMethods.map((method, index) => (
-                  <span key={index} className="px-3 py-1 bg-cocoa-medium/20 text-cocoa-dark text-sm rounded-full">
-                    {method}
-                  </span>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          {/* Quality Grades */}
-          {product.qualityGrades && product.qualityGrades.length > 0 && (
-            <Card className="p-6">
-              <h3 className="font-semibold text-coffee-dark mb-4">Quality Grades</h3>
-              <div className="flex flex-wrap gap-2">
-                {product.qualityGrades.map((grade, index) => (
-                  <span key={index} className="px-3 py-1 bg-gold/20 text-gold-dark text-sm rounded-full">
-                    {grade}
-                  </span>
-                ))}
-              </div>
-            </Card>
-          )}
-        </div>
-
-        {/* Certifications */}
-        {/* {product.certifications && product.certifications.length > 0 && (
+          {/* Certifications */}
+          {/* {product.certifications && product.certifications.length > 0 && (
           <Section>
             <SectionHeader title="Certifications & Quality Standards" description="Our commitment to quality and sustainability" />
 
@@ -315,71 +301,56 @@ export default async function ProductDetailPage({ params }) {
           </Section>
         )} */}
 
-        {/* Additional Documents */}
-        {product.additionalDocuments && product.additionalDocuments.length > 0 && (
-          <Section>
-            <SectionHeader title="Additional Resources" description="Download additional product information and documentation" />
+          {/* Additional Documents */}
+          {product.additionalDocuments && product.additionalDocuments.length > 0 && (
+            <Section>
+              <SectionHeader title="Additional Resources" description="Download additional product information and documentation" />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-              {product.additionalDocuments.map((doc, index) => (
-                <Card key={index} className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-coffee-dark mb-2">{doc.title}</h3>
-                      {doc.description && <p className="text-sm text-muted-foreground mb-4">{doc.description}</p>}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                {product.additionalDocuments.map((doc, index) => (
+                  <Card key={index} className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-coffee-dark mb-2">{doc.title}</h3>
+                        {doc.description && <p className="text-sm text-muted-foreground mb-4">{doc.description}</p>}
+                      </div>
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={doc.file.asset.url} download={doc.file.asset.originalFilename} target="_blank" rel="noopener noreferrer">
+                          <Download className="w-4 h-4" />
+                        </a>
+                      </Button>
                     </div>
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={doc.file.asset.url} download={doc.file.asset.originalFilename} target="_blank" rel="noopener noreferrer">
-                        <Download className="w-4 h-4" />
-                      </a>
-                    </Button>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* Detailed Content */}
+          {product.detailedContent && (
+            <Section>
+              <div className="prose prose-lg max-w-none">
+                <PortableText value={product.detailedContent} components={productPortableTextComponents} />
+              </div>
+            </Section>
+          )}
+        </article>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="bg-coffee-light/5 py-16">
+            <div className="max-w-6xl mx-auto px-4">
+              <SectionHeader title="Related Products" subtitle="You might also be interested in" description="Discover more premium products from our collection" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+                {relatedProducts.map((relatedProduct) => (
+                  <RelatedProductCard key={relatedProduct._id} product={relatedProduct} />
+                ))}
+              </div>
             </div>
-          </Section>
+          </section>
         )}
-
-        {/* Detailed Content */}
-        {product.detailedContent && (
-          <Section>
-            <div className="prose prose-lg max-w-none">
-              <PortableText value={product.detailedContent} components={productPortableTextComponents} />
-            </div>
-          </Section>
-        )}
-
-        {/* Product Footer */}
-        <footer className="mt-12 pt-8 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <Link href="/products">
-              <Button variant="outline">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                View All Products
-              </Button>
-            </Link>
-
-            <div className="flex gap-3">
-              <ShareButton title={product.title} excerpt={product.shortDescription} />
-            </div>
-          </div>
-        </footer>
-      </article>
-
-      {/* Related Products */}
-      {relatedProducts.length > 0 && (
-        <section className="bg-coffee-light/5 py-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <SectionHeader title="Related Products" subtitle="You might also be interested in" description="Discover more premium products from our collection" />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-              {relatedProducts.map((relatedProduct) => (
-                <RelatedProductCard key={relatedProduct._id} product={relatedProduct} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

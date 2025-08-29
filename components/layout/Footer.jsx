@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-gold to-coffee-medium rounded-full flex items-center justify-center">
                 <Image
-                  src="/images/logo-09.png" // Replace with your image path
+                  src="/logo.png" // Replace with your image path
                   alt="Harika Nusantara Logo"
                   width={65} // Adjust size to fit nicely inside the 40x40 div
                   height={65}
