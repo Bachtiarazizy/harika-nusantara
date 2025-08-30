@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Button, Card, Section, SectionHeader } from "@/components/ui/Index";
+import { motion } from "framer-motion";
 
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Globe, Building, ChevronDown } from "lucide-react";
+import { Mail, Clock, Send, MessageCircle, Building, ChevronDown } from "lucide-react";
 import StructuredData from "@/components/seo/StructuredData";
 
 export default function ContactComponent() {
@@ -102,13 +103,14 @@ export default function ContactComponent() {
     <>
       <StructuredData type="contact" />
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative py-24 bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">Contact Us</h1>
-            <p className="text-xl text-coffee-light max-w-3xl mx-auto">Ready to import premium Indonesian coffee and cocoa? Get in touch with our export team for quotes, samples, and detailed product information.</p>
+        <motion.header className="bg-[#392E20] py-16 px-4" initial="hidden" animate="visible">
+          <div className="max-w-4xl mx-auto">
+            <motion.div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-calistoga text-white mt-12 mb-4">Contact Us</h1>
+              <p className="text-lg text-gray-100 max-w-2xl mx-auto"> Ready to import premium Indonesian coffee and cocoa? Get in touch with our export team for quotes, samples, and detailed product information.</p>
+            </motion.div>
           </div>
-        </section>
+        </motion.header>
 
         {/* Contact Form & Info */}
         <Section>

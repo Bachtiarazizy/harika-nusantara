@@ -4,119 +4,200 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button, Section, Card } from "../ui/Index";
-import { ArrowRight, CheckCircle, Eye } from "lucide-react";
+import { ArrowRight, CheckCircle, Eye, Package, Award, Leaf, Globe, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ProductShowcaseClient({ initialProducts }) {
+  // Animation variants
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    <Section className="bg-coffee-light/10 py-20 px-2">
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left column - title and description */}
-        <motion.div className="lg:w-1/2 lg:sticky lg:top-8 lg:self-start" initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true, amount: 0.3 }}>
-          <h2 className="text-coffee-dark font-semibold text-sm uppercase tracking-[0.5em] mb-6 border border-muted-foreground rounded-sm px-6 py-2 inline-block">HARIKA NUSANTARA</h2>
-          <h1 className="text-3xl lg:text-4xl font-bold text-coffee-dark mb-4">
-            Indonesian Excellence, <br />
-            From Bean to Bite
-          </h1>
-          <p className="text-xl font-semibold text-muted-foreground">Discover our curated selection of premium coffee and cocoa products crafted with care, rooted in heritage, and delivered with full traceability and quality:</p>
-          <Link href="/products" className="inline-block">
-            <Button size="md" className="bg-[#e49e35] hover:bg-[#27231a] hover:text-[#f5dab3] text-white mt-6 transition-all duration-300 font-semibold">
-              View all Products
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+    <Section className="bg-gradient-to-b from-coffee-light/5 to-white py-24">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header Section */}
+        <motion.div className="text-center mb-6 md:mb-20" initial="hidden" whileInView="visible" variants={headerVariants} viewport={{ once: true, amount: 0.3 }}>
+          <div className="inline-flex items-center bg-coffee-dark/5 rounded-full px-6 py-2 mb-6">
+            <Package className="w-4 h-4 text-coffee-dark mr-2" />
+            <span className="text-sm font-semibold text-coffee-dark tracking-wide uppercase">Our Products</span>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-coffee-dark mb-4">Indonesian Excellence, From Bean to Bite</h2>
+
+          <p className="hidden md:block text-xl text-muted-foreground max-w-4xl mx-auto mb-8 leading-relaxed">
+            Discover our curated selection of premium coffee, cocoa, and spices. Each product is carefully sourced, quality-tested, and prepared to meet international standards for discerning global markets.
+          </p>
+
+          <div className="hidden md:flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center">
+              <Award className="w-4 h-4 text-gold mr-2" />
+              <span>Premium Grade</span>
+            </div>
+            <div className="flex items-center">
+              <Leaf className="w-4 h-4 text-forest-green mr-2" />
+              <span>Sustainably Sourced</span>
+            </div>
+            <div className="flex items-center">
+              <Globe className="w-4 h-4 text-coffee-dark mr-2" />
+              <span>Export Ready</span>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Right column - animated cards */}
-        <motion.div
-          className="lg:w-1/2 grid grid-cols-1 gap-8"
-          initial="hidden"
-          whileInView="visible"
-          variants={{
-            visible: {
-              transition: { staggerChildren: 0.2 },
-            },
-          }}
-          viewport={{ once: true }}
-        >
+        {/* Products Grid */}
+        <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16" initial="hidden" whileInView="visible" variants={containerVariants} viewport={{ once: true, amount: 0.1 }}>
           {initialProducts.map((product, index) => (
-            <motion.div
-              key={`${product._id}-${index}`}
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.6 }}
-            >
-              <Card className="overflow-hidden group hover:shadow-xl transition-shadow duration-300">
-                {/* Product Image */}
-                <div className="relative h-64 overflow-hidden">
+            <motion.div key={`${product._id}-${index}`} variants={cardVariants} whileHover={{ y: -8, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+              <Card className="overflow-hidden group hover:shadow-2xl transition-all duration-500 h-full flex flex-col bg-white border-0 shadow-lg">
+                {/* Product Image with Overlay */}
+                <div className="relative h-72 overflow-hidden">
                   {product.mainImage?.asset?.url ? (
                     <Image
                       src={product.mainImage.asset.url}
                       alt={product.mainImage.alt || product.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
                     <div
-                      className="h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300"
+                      className="h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                       style={{
                         backgroundImage: `url('/images/coffee-beans-premium.webp')`,
                       }}
                     />
                   )}
-                </div>
 
-                {/* Product Info */}
-                <div className="p-6">
-                  {/* Title */}
-                  <h3 className="text-2xl font-semibold text-coffee-dark mb-3">{product.title}</h3>
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  {/* Short Description with line clamp */}
-                  <p className="text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
-
-                  {/* Key Specifications */}
-                  <div className="mb-6">
-                    <h4 className="font-medium text-coffee-dark text-sm mb-3">Key Specifications:</h4>
-                    <ul className="space-y-2">
-                      {product.specifications?.slice(0, 3).map((spec, specIndex) => (
-                        <li key={specIndex} className="flex items-center text-sm">
-                          <CheckCircle className="w-4 h-4 text-forest-green mr-2 flex-shrink-0" />
-                          <span className="text-gray-600">
-                            <span className="font-medium">{spec.label}:</span> {spec.value}
-                          </span>
-                        </li>
-                      )) || [
-                        <li key="default-1" className="flex items-center text-sm">
-                          <CheckCircle className="w-4 h-4 text-forest-green mr-2 flex-shrink-0" />
-                          <span className="text-gray-600">Premium Quality Guaranteed</span>
-                        </li>,
-                        <li key="default-2" className="flex items-center text-sm">
-                          <CheckCircle className="w-4 h-4 text-forest-green mr-2 flex-shrink-0" />
-                          <span className="text-gray-600">ISO Certified Processing</span>
-                        </li>,
-                        <li key="default-3" className="flex items-center text-sm">
-                          <CheckCircle className="w-4 h-4 text-forest-green mr-2 flex-shrink-0" />
-                          <span className="text-gray-600">Direct from Indonesian Farms</span>
-                        </li>,
-                      ]}
-                    </ul>
+                  {/* Quality Badge */}
+                  <div className="absolute top-4 left-4">
+                    <div className="bg-gold text-coffee-dark px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Premium Grade</div>
                   </div>
 
-                  {/* View Details Button */}
-                  <Link href={`/products/${product.slug?.current || "#"}`} className="block">
-                    <Button variant="outline" className="w-full hover:bg-coffee-dark hover:text-white transition-colors duration-300">
-                      <Eye className="mr-2 w-4 h-4" />
-                      View Details
-                      <ArrowRight className="ml-2 w-4 h-4" />
-                    </Button>
-                  </Link>
+                  {/* Export Ready Badge */}
+                  {/* <div className="absolute top-4 right-4">
+                    <div className="bg-forest-green text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Export Ready</div>
+                  </div> */}
+                </div>
+
+                {/* Product Content */}
+                <div className="p-8 flex flex-col flex-1">
+                  {/* Product Title */}
+                  <h3 className="text-2xl font-bold text-coffee-dark mb-4 leading-tight group-hover:text-gold transition-colors duration-300">{product.title}</h3>
+
+                  {/* Product Description */}
+                  <p className="text-muted-foreground mb-6 leading-relaxed line-clamp-3 flex-grow">{product.shortDescription}</p>
+
+                  {/* Specifications Grid */}
+                  {product.specifications && product.specifications.length > 0 && (
+                    <div className="mb-8">
+                      <h4 className="text-sm font-semibold text-coffee-dark mb-4 uppercase tracking-wide">Key Specifications</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {product.specifications.slice(0, 3).map((spec, specIndex) => (
+                          <div key={specIndex} className="flex items-center justify-between py-2 px-3 bg-coffee-light/5 rounded-lg">
+                            <span className="text-sm text-muted-foreground font-medium">{spec.label}</span>
+                            <span className="text-sm font-semibold text-coffee-dark">{spec.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="mt-auto space-y-3">
+                    <Link href={`/products/${product.slug?.current || "#"}`} className="block">
+                      <Button className="w-full bg-coffee-dark hover:bg-coffee-dark/90 text-white font-semibold py-3 text-base group-hover:shadow-lg transition-all duration-300">
+                        View Details
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </Link>
+
+                    <Link href="mailto:info@harikanusantara.com">
+                      <Button variant="outline" className="w-full border-coffee-dark text-coffee-dark hover:bg-coffee-dark hover:text-white font-medium py-3 text-base">
+                        Request Quote
+                        <ChevronRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </Card>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* View More Section */}
+        <motion.div className="text-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }} viewport={{ once: true }}>
+          <div className="bg-gradient-to-r from-coffee-light/10 to-gold/10 rounded-2xl p-8 md:p-12">
+            <h3 className="text-3xl font-bold text-coffee-dark mb-4">Discover Our Complete Product Range</h3>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">Explore our full catalog of premium Indonesian agricultural products, including detailed specifications, pricing, and availability information.</p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/products">
+                <Button size="lg" className="bg-coffee-dark hover:bg-coffee-dark/90 text-white px-8 py-4 text-lg font-semibold">
+                  <Package className="w-5 h-5 mr-2" />
+                  View All Products
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+
+              <Link href="#">
+                <Button variant="outline" size="lg" className="border-coffee-dark text-coffee-dark hover:bg-coffee-dark hover:text-white px-8 py-4 text-lg font-semibold">
+                  Download Catalog
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Additional Info */}
+            <div className="mt-8 pt-6 border-t border-coffee-light/20">
+              <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-forest-green mr-2" />
+                  <span>20+ Product Varieties</span>
+                </div>
+                <div className="flex items-center">
+                  <Award className="w-4 h-4 text-gold mr-2" />
+                  <span>International Quality Standards</span>
+                </div>
+                <div className="flex items-center">
+                  <Globe className="w-4 h-4 text-coffee-dark mr-2" />
+                  <span>Global Shipping Available</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </Section>

@@ -52,7 +52,7 @@ export default function BlogCard({ post, index = 0 }) {
 
           {/* Read More Button */}
           <Link href={postUrl}>
-            <Button variant="link" className="px-0 text-coffee-dark font-semibold">
+            <Button variant="" className="px-0 text-coffee-dark font-semibold hover:text-coffee-dark/70">
               Read More <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>

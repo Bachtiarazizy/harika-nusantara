@@ -27,36 +27,14 @@ export default function BlogPageClient({ allPosts, searchParams }) {
     <>
       <StructuredData type="homepage" />
       <div className="min-h-screen">
-        {/* Hero Section - Matching About Page Style */}
-        <motion.section className="relative py-24 bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-          <div className="container mx-auto px-4 text-center">
-            <motion.h1 className="text-4xl lg:text-6xl font-bold mb-6" variants={fadeIn} initial="hidden" animate="visible">
-              Stories from the Farm
-            </motion.h1>
-            <motion.p className="text-xl text-coffee-light max-w-3xl mx-auto mb-8" variants={fadeIn} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
-              Discover inspiring stories from Indonesian coffee and cocoa farmers, sustainable farming tips, and the journey from farm to your cup.
-            </motion.p>
-
-            {/* Search Bar */}
-            <motion.div variants={fadeIn} initial="hidden" animate="visible" transition={{ delay: 0.6 }}>
-              <SearchForm defaultValue={searchQuery} />
+        <motion.header className="bg-[#392E20] py-16 px-4" initial="hidden" animate="visible">
+          <div className="max-w-4xl mx-auto">
+            <motion.div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-calistoga text-white mt-12 mb-4">Stories from the Farm</h1>
+              <p className="text-lg text-gray-100 max-w-2xl mx-auto">Discover inspiring stories from Indonesian coffee and cocoa farmers, sustainable farming tips, and the journey from farm to your cup.</p>
             </motion.div>
           </div>
-        </motion.section>
-
-        {/* Search Results Info */}
-        {searchQuery && (
-          <section className="max-w-6xl mx-auto px-4 py-8">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800">{filteredPosts.length > 0 ? `Found ${filteredPosts.length} article${filteredPosts.length > 1 ? "s" : ""} for "${searchQuery}"` : `No articles found for "${searchQuery}"`}</p>
-              {searchQuery && (
-                <ClearSearchButton variant="link" className="p-0 mt-2 text-blue-600 hover:text-blue-800">
-                  Show all articles
-                </ClearSearchButton>
-              )}
-            </div>
-          </section>
-        )}
+        </motion.header>
 
         {/* Blog Posts */}
         <section className="py-16">
@@ -76,11 +54,6 @@ export default function BlogPageClient({ allPosts, searchParams }) {
               </div>
             </div>
           )}
-        </section>
-
-        {/* CTA Section - Using same component as About page */}
-        <section aria-labelledby="cta-heading">
-          <CTASection />
         </section>
       </div>
     </>

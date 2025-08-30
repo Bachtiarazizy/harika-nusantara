@@ -6,9 +6,9 @@ export default function Footer() {
   return (
     <footer className="bg-coffee-dark text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-12">
+          {/* Company Info - Lebih lebar */}
+          <div className="md:col-span-1 lg:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-gold to-coffee-medium rounded-full flex items-center justify-center">
                 <Image
@@ -38,7 +38,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="md:col-span-1 lg:col-span-1">
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
@@ -70,7 +70,7 @@ export default function Footer() {
           </div>
 
           {/* Products */}
-          <div>
+          <div className="md:col-span-1 lg:col-span-1">
             <h4 className="text-lg font-semibold mb-4">Our Products</h4>
             <ul className="space-y-2">
               <li>
@@ -102,26 +102,16 @@ export default function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="md:col-span-1 lg:col-span-1">
             <h4 className="text-lg font-semibold mb-4">Contact Information</h4>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-gold mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-coffee-light">
-                    <br />
-                    Semarang, Central Java 50123
-                    <br />
-                    Indonesia
-                  </p>
-                </div>
+                <p className="text-coffee-light">Semarang, Central Java, Indonesia</p>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-gold" />
                 <p className="text-coffee-light">+90 542 179 3483</p>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-gold" />
                 <p className="text-coffee-light">info@harikanusantara.com</p>
               </div>
             </div>

@@ -24,7 +24,7 @@ const staggerContainer = {
 
 export default function CTASection() {
   return (
-    <Section className="bg-white">
+    <Section>
       <motion.div className="text-center" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.4 }} variants={staggerContainer}>
         <motion.h2 className="text-3xl lg:text-4xl font-bold text-coffee-dark mb-4" variants={fadeIn}>
           Ready to Partner with Us?

@@ -237,11 +237,11 @@ export default async function BlogDetailPage({ params }) {
                 <li key={index} className="flex items-center">
                   {index > 0 && <span className="mr-2">/</span>}
                   {index === breadcrumbs.length - 1 ? (
-                    <span className="text-primary font-medium" aria-current="page">
+                    <span className="text-primary font-medium line-clamp-1" aria-current="page">
                       {item.name.length > 50 ? item.name.substring(0, 50) + "..." : item.name}
                     </span>
                   ) : (
-                    <a href={item.url} className="text-muted-foreground hover:text-primary">
+                    <a href={item.url} className="text-muted-foreground hover:text-primary line-clamp-1">
                       {item.name}
                     </a>
                   )}
@@ -259,10 +259,10 @@ export default async function BlogDetailPage({ params }) {
           {/* Article Header - Below Image */}
           <header className="mb-8">
             {/* Title */}
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-coffee-dark mb-4 leading-tight">{post.title}</h1>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-coffee-dark mb-4 leading-tight">{post.title}</h1>
 
             {/* Excerpt */}
-            <p className="text-xl text-muted-foreground leading-relaxed mb-6">{post.excerpt}</p>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-6">{post.excerpt}</p>
 
             {/* Article Meta Info */}
             <div className="flex items-center gap-6 text-sm text-muted-foreground">

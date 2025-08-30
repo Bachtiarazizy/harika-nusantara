@@ -20,7 +20,7 @@ export default function ShareButton({ title, excerpt, className = "" }) {
   return (
     <Button variant="ghost" className={className} onClick={handleShare}>
       <Share2 className="w-4 h-4 mr-2" />
-      Bagikan
+      Share
     </Button>
   );
 }

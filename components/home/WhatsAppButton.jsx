@@ -20,9 +20,6 @@ export default function WhatsAppButton() {
         Chat with us on WhatsApp
         <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
       </div>
-
-      {/* Pulse animation */}
-      <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75"></div>
     </button>
   );
 }

@@ -1,6 +1,4 @@
-// Alternative server-side version (recommended for better SEO)
 // components/home/ProductShowcaseSection.js
-
 import Link from "next/link";
 import Image from "next/image";
 import { Button, Section, Card } from "../ui/Index";
@@ -12,10 +10,11 @@ export default async function ProductShowcaseSection() {
   let products = [];
 
   try {
-    products = await getFeaturedProducts(4);
+    // Changed from 4 to 3 products
+    products = await getFeaturedProducts(3);
   } catch (error) {
     console.error("Error fetching featured products:", error);
-    // Fallback to static data if Sanity fails
+    // Updated fallback data with only 3 products
     products = [
       {
         _id: "fallback-1",
@@ -47,11 +46,26 @@ export default async function ProductShowcaseSection() {
           alt: "Premium Cocoa Products",
         },
       },
+      {
+        _id: "fallback-3",
+        title: "Specialty Spices",
+        shortDescription: "Premium Indonesian spices including vanilla, cardamom, and cinnamon. Hand-selected and processed to maintain maximum flavor and aroma.",
+        slug: { current: "specialty-spices" },
+        specifications: [
+          { label: "Quality", value: "Grade A" },
+          { label: "Origin", value: "Java, Bali" },
+          { label: "Packaging", value: "Food Grade" },
+        ],
+        mainImage: {
+          asset: { url: "/images/spices-premium.webp" },
+          alt: "Specialty Spices",
+        },
+      },
     ];
   }
 
-  // Create display products - repeat if less than 4
-  const displayProducts = products.length >= 4 ? products.slice(0, 4) : products.length > 0 ? [...products, ...products].slice(0, 4) : [];
+  // Display exactly 3 products - no repetition needed
+  const displayProducts = products.slice(0, 3);
 
   return <ProductShowcaseClient initialProducts={displayProducts} />;
 }

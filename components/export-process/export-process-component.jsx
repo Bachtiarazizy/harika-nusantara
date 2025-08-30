@@ -3,6 +3,7 @@
 import StructuredData from "@/components/seo/StructuredData";
 import { Button, Card, Section, SectionHeader } from "@/components/ui/Index";
 import { Search, CheckCircle, Package, Ship, FileText, Clock, Shield, Globe } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function ExportProcessComponent() {
   const processSteps = [
@@ -54,13 +55,14 @@ export default function ExportProcessComponent() {
     <>
       <StructuredData type="export-process" />
       <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative py-24 bg-gradient-to-br from-coffee-dark to-cocoa-dark text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">Export Process</h1>
-            <p className="text-xl text-coffee-light max-w-3xl mx-auto">From farm to your doorstep - our comprehensive export process ensures quality, reliability, and timely delivery of premium Indonesian coffee and cocoa.</p>
+        <motion.header className="bg-[#392E20] py-16 px-4" initial="hidden" animate="visible">
+          <div className="max-w-4xl mx-auto">
+            <motion.div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-calistoga text-white mt-12 mb-4">Export Process</h1>
+              <p className="text-lg text-gray-100 max-w-2xl mx-auto">From farm to your doorstep - our comprehensive export process ensures quality, reliability, and timely delivery of premium Indonesian coffee and cocoa.</p>
+            </motion.div>
           </div>
-        </section>
+        </motion.header>
 
         {/* Process Overview */}
         <Section>
